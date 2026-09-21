@@ -1,0 +1,1622 @@
+{
+  "schemaVersion": 1,
+  "game": {
+    "id": "case-01-camera",
+    "title": "CASE 01：消失的相机",
+    "genre": "校园日常推理 / 手机搜证",
+    "platform": "PC Web",
+    "estimatedMinutes": 10,
+    "deviceMode": "readonly-phone",
+    "saveKey": "case01-camera-save-v1",
+    "startScreenId": "login"
+  },
+  "login": {
+    "systemName": "校园保卫处 · 办公系统",
+    "systemVersion": "v2.6.1",
+    "bootLines": [
+      "正在连接保卫处内网……",
+      "安全组件自检通过",
+      "读取值班表：今日值班 —— 学生助理（你）",
+      "发现 1 条待办：新收案 2026-0918"
+    ],
+    "roleLabel": "岗位",
+    "roleName": "学生助理 · 物证检查",
+    "operatorLabel": "值班人",
+    "operatorName": "助理",
+    "badgeLabel": "工号",
+    "badgeNo": "BAO-2026-073",
+    "passwordLabel": "口令",
+    "noticeLabel": "待办提醒",
+    "noticeText": "新收案 1 条：失物登记 2026-0918（待处理）",
+    "loginButtonLabel": "登录并开始值班",
+    "loggingInLabel": "正在核验身份……",
+    "successLabel": "身份核验通过",
+    "dutyHint": "仅限工作使用 · 全部操作留痕",
+    "dateLabel": "9 月 19 日 星期六 09:20"
+  },
+  "settlement": {
+    "kicker": "CASE 01 · 结案报告",
+    "title": "消失的相机",
+    "resultTitle": "相机已找回",
+    "stampText": "已结案",
+    "statsTitle": "本次调查统计",
+    "statLabels": {
+      "clues": "收集线索",
+      "reward": "结案奖励",
+      "submits": "报告提交",
+      "focus": "关键人物"
+    },
+    "statUnits": {
+      "clues": "条",
+      "reward": "积分",
+      "submits": "次",
+      "focus": "人"
+    },
+    "ratingTitle": "调查评级",
+    "ratingLevels": {
+      "S": { "label": "S · 完美侦探", "desc": "收集全部线索，一次提交即结案" },
+      "A": { "label": "A · 敏锐调查员", "desc": "思路清晰，证据链基本完整" },
+      "B": { "label": "B · 案件了结", "desc": "真相大白，下次可以更细心一些" }
+    },
+    "timelineTitle": "真相时间线",
+    "endButtonLabel": "结束本次值班",
+    "endHint": "结束后将退出登录，可重新登录再次调查",
+    "backButtonLabel": "返回案件",
+    "rewardConfig": {
+      "tiers": [
+        { "maxSeconds": 180, "points": 300, "label": "3 分钟内完成" },
+        { "maxSeconds": 300, "points": 200, "label": "5 分钟内完成" }
+      ],
+      "fallbackPoints": 100,
+      "fallbackLabel": "完成调查"
+    }
+  },
+  "player": {
+    "role": "学校保卫处学生助理",
+    "task": "检查林夏提供的手机资料，确认相机最后出现的时间、谁在失踪时仍留在活动室，以及谁拿走并准备出售相机。",
+    "permissionsTitle": "可以做的",
+    "restrictionsTitle": "不能做的",
+    "permissions": [
+      "查看手机中的只读内容",
+      "放大照片并查看时间信息",
+      "查看关键内容时自动记录线索",
+      "根据线索提交调查结论"
+    ],
+    "restrictions": [
+      "不能修改或删除手机内容",
+      "不能直接审问人物",
+      "不调查其他设备"
+    ]
+  },
+  "briefing": {
+    "video": {
+      "kicker": "案件 01",
+      "title": "消失的相机",
+      "skipLabel": "跳过",
+      "replayLabel": "重播",
+      "startLabel": "开始检查手机",
+      "sceneIndicator": "{current} / {total}",
+      "scenes": [
+        {
+          "id": "VS1",
+          "duration": 3000,
+          "kicker": "9 月 18 日 星期五",
+          "caption": "学生活动中心 304，摄影社作品展收尾。"
+        },
+        {
+          "id": "VS2",
+          "duration": 4000,
+          "image": "/gallery/06-equipment-cabinet.webp",
+          "kicker": "20:20",
+          "caption": "相机和相机包被放进器材柜——这是它最后一次被确认在柜中。"
+        },
+        {
+          "id": "VS3",
+          "duration": 3500,
+          "image": "/gallery/12-activity-center-night.webp",
+          "kicker": "21:00",
+          "caption": "活动结束，社长林夏清点器材时发现相机丢失。"
+        },
+        {
+          "id": "VS4",
+          "duration": 4000,
+          "kicker": "四位在场社员",
+          "caption": "林夏、方立、沈悦、周扬都曾在 304 逗留。活动室没有监控。"
+        },
+        {
+          "id": "VS5",
+          "duration": 3500,
+          "kicker": "你的任务",
+          "caption": "查看这部手机里的图库、微信和交易记录，找出相机的下落。"
+        }
+      ]
+    }
+  },
+ "people": [
+    {
+      "id": "P01",
+      "name": "林夏",
+      "role": "摄影社社长、手机持有人",
+      "phoneSuffix": null,
+      "statement": "20:20，我把相机放进了 304 的器材柜。",
+      "publicNote": "20:22 后一直在一楼服务台归还场地物资。",
+      "isSuspect": false
+    },
+    {
+      "id": "P02",
+      "name": "方立",
+      "role": "摄影社普通社员",
+      "phoneSuffix": "7314",
+      "statement": "我 20:10 就走了，没看见相机入柜。",
+      "publicNote": "群聊中在 20:14 发送了“我先走了，明天见”。",
+      "isSuspect": true
+    },
+    {
+      "id": "P03",
+      "name": "沈悦",
+      "role": "摄影社宣传负责人",
+      "phoneSuffix": "2846",
+      "statement": "我拍完走廊照片就去了打印店。",
+      "publicNote": "20:43 的打印店付款记录与 20:45 的群聊照片可以验证其说法。",
+      "isSuspect": true
+    },
+    {
+      "id": "P04",
+      "name": "周扬",
+      "role": "摄影社器材管理员",
+      "phoneSuffix": "5092",
+      "statement": "我 20:30 回去拿过充电器，没碰相机。",
+      "publicNote": "门锁显示其 20:29 进入、20:32 离开；20:33 已在一楼。",
+      "isSuspect": true
+    },
+    {
+      "id": "P05",
+      "name": "陈晨",
+      "role": "摄影社社员",
+      "phoneSuffix": "8821",
+      "statement": "（未单独问询）",
+      "publicNote": "撤展当晚负责一楼的矿泉水和展板。",
+      "isSuspect": false
+    },
+    {
+      "id": "P06",
+      "name": "场地管理老师",
+      "role": "学生活动中心场地管理",
+      "phoneSuffix": "6001",
+      "statement": "（未单独问询）",
+      "publicNote": "当晚通过微信提醒林夏归还钥匙。",
+      "isSuspect": false
+    }
+  ],
+  "phone": {
+    "ownerName": "林夏",
+    "device": "HUAWEI Mate 60",
+    "statusBar": {
+      "time": "09:20",
+      "date": "9月19日 星期六",
+      "weather": "☀️ 晴 24°",
+      "wallpaper": "/wallpaper-light.jpg",
+      "network": "Wi-Fi",
+      "batteryPercent": 82,
+      "modeLabel": "只读调查模式"
+    },
+    "irrelevantAppToast": "与本案无关，调查模式下不可访问。",
+    "apps": [
+      {
+        "id": "sys-dialer",
+        "name": "电话",
+        "icon": "📞",
+        "kind": "system",
+        "dock": true
+      },
+      {
+        "id": "contacts",
+        "name": "联系人",
+        "icon": "👥",
+        "kind": "key",
+        "dock": true
+      },
+      {
+        "id": "sys-browser",
+        "name": "浏览器",
+        "icon": "🌐",
+        "kind": "system",
+        "dock": true
+      },
+      {
+        "id": "gallery",
+        "name": "图库",
+        "icon": "🖼️",
+        "kind": "key",
+        "dock": true
+      },
+      {
+        "id": "sys-camera",
+        "name": "相机",
+        "icon": "📷",
+        "kind": "system",
+        "page": 1
+      },
+      {
+        "id": "notes",
+        "name": "备忘录",
+        "icon": "📝",
+        "kind": "distractor",
+        "page": 1
+      },
+      {
+        "id": "sys-messages",
+        "name": "信息",
+        "icon": "✉️",
+        "kind": "system",
+        "page": 1
+      },
+      {
+        "id": "calendar",
+        "name": "日历",
+        "icon": "📅",
+        "kind": "distractor",
+        "page": 1
+      },
+      {
+        "id": "clock",
+        "name": "时钟",
+        "icon": "⏰",
+        "kind": "distractor",
+        "page": 1
+      },
+      {
+        "id": "sys-settings",
+        "name": "设置",
+        "icon": "⚙️",
+        "kind": "system",
+        "page": 1
+      },
+      {
+        "id": "sys-files",
+        "name": "文件管理",
+        "icon": "📁",
+        "kind": "system",
+        "page": 1
+      },
+      {
+        "id": "sys-calculator",
+        "name": "计算器",
+        "icon": "🧮",
+        "kind": "system",
+        "page": 1
+      },
+      {
+        "id": "wechat",
+        "name": "微信",
+        "icon": "💬",
+        "kind": "key",
+        "page": 2,
+        "badgeCondition": {
+          "type": "anyEvidence",
+          "evidenceIds": ["E03", "E06"]
+        },
+        "badgeText": "新线索"
+      },
+      {
+        "id": "express",
+        "name": "菜鸟",
+        "icon": "📦",
+        "kind": "distractor",
+        "page": 2
+      },
+      {
+        "id": "sys-email",
+        "name": "QQ邮箱",
+        "icon": "📧",
+        "kind": "system",
+        "page": 2
+      },
+      {
+        "id": "sys-video",
+        "name": "哔哩哔哩",
+        "icon": "▶️",
+        "kind": "system",
+        "page": 2
+      },
+      {
+        "id": "sys-music",
+        "name": "网易云音乐",
+        "icon": "🎵",
+        "kind": "system",
+        "page": 2
+      },
+      {
+        "id": "sys-shopping",
+        "name": "淘宝",
+        "icon": "🛍️",
+        "kind": "system",
+        "page": 2
+      }
+    ]
+  },
+  "content": {
+    "contacts": {
+      "groups": [
+        {
+          "id": "g-club",
+          "label": "摄影社",
+          "personIds": [
+            "P02",
+            "P03",
+            "P04",
+            "P05"
+          ]
+        },
+        {
+          "id": "g-school",
+          "label": "老师与同学",
+          "personIds": [
+            "P06"
+          ],
+          "entries": [
+            {
+              "id": "c-mom",
+              "name": "妈妈",
+              "phoneSuffix": "6688",
+              "note": "每周日晚视频"
+            },
+            {
+              "id": "c-roommate",
+              "name": "室友 小柯",
+              "phoneSuffix": "2333",
+              "note": "305 寝室"
+            },
+            {
+              "id": "c-print",
+              "name": "打印店",
+              "phoneSuffix": "0192",
+              "note": "学生活动中心一楼"
+            }
+          ]
+        }
+      ]
+    },
+    "distractors": {
+      "calendar": {
+        "monthLabel": "2026 年 9 月",
+        "weekdays": [
+          "一",
+          "二",
+          "三",
+          "四",
+          "五",
+          "六",
+          "日"
+        ],
+        "leadBlanks": 1,
+        "daysInMonth": 30,
+        "todayDay": 19,
+        "highlight": {
+          "day": 18,
+          "label": "作品展"
+        },
+        "eventsTitle": "近期日程",
+        "events": [
+          {
+            "date": "9 月 19 日（周六）",
+            "title": "社团例会",
+            "detail": "下午 14:00 · 304 活动室"
+          },
+          {
+            "date": "9 月 21 日（周一）",
+            "title": "还书提醒",
+            "detail": "《摄影构图》到期，归还图书馆"
+          }
+        ]
+      },
+      "clock": {
+        "bigTime": "09:20",
+        "dateLabel": "9月19日 星期六",
+        "alarmTitle": "闹钟",
+        "alarms": [
+          {
+            "time": "07:00",
+            "label": "工作日起床",
+            "enabled": true
+          },
+          {
+            "time": "07:40",
+            "label": "周末起床",
+            "enabled": false
+          },
+          {
+            "time": "13:30",
+            "label": "午休提醒",
+            "enabled": false
+          },
+          {
+            "time": "21:30",
+            "label": "睡前拉伸",
+            "enabled": true
+          }
+        ]
+      },
+      "notes": {
+        "notes": [
+          {
+            "id": "note-shopping",
+            "title": "购物清单",
+            "preview": "鸡蛋、酱油、5 号电池……",
+            "lines": [
+              "鸡蛋 一盒",
+              "酱油 一瓶",
+              "5 号电池（闪光灯备用）",
+              "A4 打印纸 一包"
+            ]
+          },
+          {
+            "id": "note-club",
+            "title": "社团例会要点",
+            "preview": "下学期招新安排……",
+            "lines": [
+              "招新摊位：9 月底 · 一食堂门口",
+              "海报设计：沈悦负责",
+              "器材清点：每周五收工后"
+            ]
+          },
+          {
+            "id": "note-library",
+            "title": "图书馆借阅",
+            "preview": "《摄影构图》9 月 21 日到期……",
+            "lines": [
+              "《摄影构图》 9 月 21 日到期",
+              "《夜间摄影手册》 已续借一次"
+            ]
+          }
+        ]
+      },
+      "express": {
+        "packages": [
+          {
+            "id": "pkg-1",
+            "company": "京东物流",
+            "name": "洗衣液 ×2",
+            "status": "已签收",
+            "statusType": "done",
+            "timeline": [
+              {
+                "time": "9 月 15 日 21:14",
+                "text": "商品已下单"
+              },
+              {
+                "time": "9 月 16 日 06:50",
+                "text": "包裹已从杭州仓发出"
+              },
+              {
+                "time": "9 月 17 日 10:22",
+                "text": "已到达校园驿站"
+              },
+              {
+                "time": "9 月 17 日 18:03",
+                "text": "已取件"
+              }
+            ]
+          },
+          {
+            "id": "pkg-2",
+            "company": "中通快递",
+            "name": "手机支架",
+            "status": "已发货",
+            "statusType": "transit",
+            "timeline": [
+              {
+                "time": "9 月 19 日 08:12",
+                "text": "商品已下单"
+              },
+              {
+                "time": "9 月 19 日 09:02",
+                "text": "商家已发货"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    "gallery": {
+      "albumTitle": "全部照片",
+      "photoCountLabel": "张照片",
+      "photos": [
+        {
+          "id": "PHOTO-01",
+          "title": "展览入口",
+          "asset": "/gallery/01-exhibition-entrance.webp",
+          "capturedAt": "9 月 18 日 18:20",
+          "group": "exhibition",
+          "info": [
+            "9 月 18 日 18:20",
+            "HUAWEI Mate 60"
+          ],
+          "caption": "作品展入口的引导牌与灯箱。",
+          "thumb": "/gallery/thumb/01-exhibition-entrance.webp"
+        },
+        {
+          "id": "PHOTO-02",
+          "title": "社员合影",
+          "asset": "/gallery/02-club-group-photo.webp",
+          "capturedAt": "9 月 18 日 19:05",
+          "group": "exhibition",
+          "info": [
+            "9 月 18 日 19:05",
+            "HUAWEI Mate 60"
+          ],
+          "caption": "开展前社员们在入口处的合影。",
+          "thumb": "/gallery/thumb/02-club-group-photo.webp"
+        },
+        {
+          "id": "PHOTO-A",
+          "title": "器材登记照",
+          "asset": "/gallery/03-equipment-registration.webp",
+          "capturedAt": "8 月 12 日 15:26",
+          "group": "exhibition",
+          "info": [
+            "8 月 12 日 15:26",
+            "4000 × 3000",
+            "摄影社器材登记"
+          ],
+          "caption": "摄影社器材登记照片，资产编号 S-017。",
+          "inspectTargets": [
+            {
+              "id": "PHOTO-A-DETAILS",
+              "label": "检查相机和相机包的细节",
+              "resultText": "相机右上角有独特的白色划痕，相机包拉链上系有红绳。",
+              "grantsEvidenceIds": [
+                "E01"
+              ]
+            }
+          ],
+          "thumb": "/gallery/thumb/03-equipment-registration.webp"
+        },
+        {
+          "id": "PHOTO-04",
+          "title": "墙面作品",
+          "asset": "/gallery/04-photo-display-wall.webp",
+          "capturedAt": "9 月 18 日 18:35",
+          "group": "exhibition",
+          "info": [
+            "9 月 18 日 18:35",
+            "HUAWEI Mate 60"
+          ],
+          "caption": "东侧墙面挂出的参赛作品。",
+          "thumb": "/gallery/thumb/04-photo-display-wall.webp"
+        },
+        {
+          "id": "PHOTO-05",
+          "title": "观众签到台",
+          "asset": "/gallery/05-registration-table.webp",
+          "capturedAt": "9 月 18 日 18:45",
+          "group": "exhibition",
+          "info": [
+            "9 月 18 日 18:45",
+            "HUAWEI Mate 60"
+          ],
+          "caption": "签到台与投票箱。",
+          "thumb": "/gallery/thumb/05-registration-table.webp"
+        },
+        {
+          "id": "PHOTO-B",
+          "title": "活动结束时的器材柜",
+          "asset": "/gallery/06-equipment-cabinet.webp",
+          "capturedAt": "9 月 18 日 20:20",
+          "group": "exhibition",
+          "info": [
+            "9 月 18 日 20:20",
+            "华为 Mate 60",
+            "未编辑原图"
+          ],
+          "caption": "林夏发到社团群的器材柜照片。",
+          "syncedChatText": "相机放 304 柜子里了，最后走的人记得锁门。",
+          "inspectTargets": [
+            {
+              "id": "PHOTO-B-TIME",
+              "label": "查看拍摄时间与柜内物品",
+              "resultText": "照片拍摄于 20:20，相机和相机包当时仍在器材柜中。",
+              "grantsEvidenceIds": [
+                "E02"
+              ]
+            }
+          ],
+          "thumb": "/gallery/thumb/06-equipment-cabinet.webp"
+        },
+        {
+          "id": "PHOTO-07",
+          "title": "收起的灯架",
+          "asset": "/gallery/07-folded-light-stands.webp",
+          "capturedAt": "9 月 18 日 20:02",
+          "group": "exhibition",
+          "info": [
+            "9 月 18 日 20:02",
+            "HUAWEI Mate 60"
+          ],
+          "caption": "撤展时收拢的补光灯架。",
+          "thumb": "/gallery/thumb/07-folded-light-stands.webp"
+        },
+        {
+          "id": "PHOTO-C",
+          "title": "走廊收尾照",
+          "asset": "/gallery/08-hallway-clue.webp",
+          "capturedAt": "9 月 18 日 20:41",
+          "group": "exhibition",
+          "info": [
+            "9 月 18 日 20:41",
+            "拍摄者：沈悦",
+            "来源：摄影社群聊"
+          ],
+          "caption": "沈悦拍摄的作品展收尾照片。",
+          "inspectTargets": [
+            {
+              "id": "PHOTO-C-RIGHT-EDGE",
+              "label": "放大照片右侧",
+              "resultText": "方立在 304 门口整理帆布袋，袋口露出的灰色包角和红绳与相机包特征相似。",
+              "grantsEvidenceIds": [
+                "E03"
+              ]
+            }
+          ],
+          "thumb": "/gallery/thumb/08-hallway-clue.webp"
+        },
+        {
+          "id": "PHOTO-09",
+          "title": "打包的海报",
+          "asset": "/gallery/09-packed-posters.webp",
+          "capturedAt": "9 月 18 日 20:50",
+          "group": "exhibition",
+          "info": [
+            "9 月 18 日 20:50",
+            "HUAWEI Mate 60"
+          ],
+          "caption": "待补印和回收的海报卷。",
+          "thumb": "/gallery/thumb/09-packed-posters.webp"
+        },
+        {
+          "id": "PHOTO-10",
+          "title": "空展厅",
+          "asset": "/gallery/10-empty-exhibition-hall.webp",
+          "capturedAt": "9 月 18 日 20:55",
+          "group": "exhibition",
+          "info": [
+            "9 月 18 日 20:55",
+            "HUAWEI Mate 60"
+          ],
+          "caption": "撤展后的空展厅。",
+          "thumb": "/gallery/thumb/10-empty-exhibition-hall.webp"
+        },
+        {
+          "id": "PHOTO-11",
+          "title": "服务台钥匙",
+          "asset": "/gallery/11-service-desk-key.webp",
+          "capturedAt": "9 月 18 日 21:10",
+          "group": "exhibition",
+          "info": [
+            "9 月 18 日 21:10",
+            "HUAWEI Mate 60"
+          ],
+          "caption": "归还场地时拍的服务台钥匙。",
+          "thumb": "/gallery/thumb/11-service-desk-key.webp"
+        },
+        {
+          "id": "PHOTO-12",
+          "title": "活动中心夜景",
+          "asset": "/gallery/12-activity-center-night.webp",
+          "capturedAt": "9 月 18 日 21:16",
+          "group": "exhibition",
+          "info": [
+            "9 月 18 日 21:16",
+            "HUAWEI Mate 60"
+          ],
+          "caption": "离开时随手拍的活动中心夜景。",
+          "thumb": "/gallery/thumb/12-activity-center-night.webp"
+        },
+        {
+          "id": "PHOTO-13",
+          "title": "宿舍楼顶日出",
+          "asset": "/gallery/13-private-sunrise.webp",
+          "capturedAt": "9 月 6 日 06:12",
+          "group": "life",
+          "info": [
+            "9 月 6 日 06:12",
+            "HUAWEI Mate 60"
+          ],
+          "caption": "宿舍楼顶看的日出。",
+          "thumb": "/gallery/thumb/13-private-sunrise.webp"
+        },
+        {
+          "id": "PHOTO-14",
+          "title": "河边日落",
+          "asset": "/gallery/14-private-riverside-sunset.webp",
+          "capturedAt": "9 月 10 日 18:40",
+          "group": "life",
+          "info": [
+            "9 月 10 日 18:40",
+            "HUAWEI Mate 60"
+          ],
+          "caption": "放学后的河边日落。",
+          "thumb": "/gallery/thumb/14-private-riverside-sunset.webp"
+        },
+        {
+          "id": "PHOTO-15",
+          "title": "雨后山路",
+          "asset": "/gallery/15-private-mountain-trip.webp",
+          "capturedAt": "8 月 30 日 15:20",
+          "group": "life",
+          "info": [
+            "8 月 30 日 15:20",
+            "HUAWEI Mate 60"
+          ],
+          "caption": "雨后山路骑行。",
+          "thumb": "/gallery/thumb/15-private-mountain-trip.webp"
+        },
+        {
+          "id": "PHOTO-16",
+          "title": "古镇游玩",
+          "asset": "/gallery/16-private-old-town-trip.webp",
+          "capturedAt": "8 月 24 日 14:05",
+          "group": "life",
+          "info": [
+            "8 月 24 日 14:05",
+            "HUAWEI Mate 60"
+          ],
+          "caption": "暑假古镇游玩。",
+          "thumb": "/gallery/thumb/16-private-old-town-trip.webp"
+        },
+        {
+          "id": "PHOTO-17",
+          "title": "校园猫打哈欠抓拍",
+          "asset": "/gallery/17-private-yawning-cat.webp",
+          "capturedAt": "9 月 15 日 12:30",
+          "group": "life",
+          "info": [
+            "9 月 15 日 12:30",
+            "HUAWEI Mate 60"
+          ],
+          "caption": "三教楼下的猫打哈欠。",
+          "thumb": "/gallery/thumb/17-private-yawning-cat.webp"
+        },
+        {
+          "id": "PHOTO-18",
+          "title": "雨后朋友跳水坑抓拍",
+          "asset": "/gallery/18-private-rain-candid.webp",
+          "capturedAt": "9 月 8 日 16:45",
+          "group": "life",
+          "info": [
+            "9 月 8 日 16:45",
+            "HUAWEI Mate 60"
+          ],
+          "caption": "雨后朋友跳水坑抓拍。",
+          "thumb": "/gallery/thumb/18-private-rain-candid.webp"
+        }
+      ]
+    },
+    "wechat": {
+      "chats": [
+        {
+          "id": "CHAT-PHOTO-CLUB",
+          "title": "摄影社作品展",
+          "kind": "group",
+          "avatar": "📷",
+          "unread": 18,
+          "memberCount": 17,
+          "dateLabel": "9 月 18 日",
+          "lastTime": "21:05",
+          "preview": "沈悦：我拍完照片就去打印店了。",
+          "messages": [
+            {
+              "id": "MSG-1906",
+              "time": "19:06",
+              "senderId": "P03",
+              "text": "刚才的合影先发群里，原图晚点整理。",
+              "attachment": {
+                "type": "photo",
+                "photoId": "PHOTO-02",
+                "popupTitle": "社员合影"
+              }
+            },
+            {
+              "id": "MSG-1948",
+              "time": "19:48",
+              "senderId": "P01",
+              "text": "还在现场的帮忙把签到台收一下。",
+              "attachment": null
+            },
+            {
+              "id": "MSG-1951",
+              "time": "19:51",
+              "senderId": "P03",
+              "text": "我先拍几张撤展素材。",
+              "attachment": null
+            },
+            {
+              "id": "MSG-1956",
+              "time": "19:56",
+              "senderId": "P04",
+              "text": "有谁看见黑色充电器了吗？",
+              "attachment": null
+            },
+            {
+              "id": "MSG-2003",
+              "time": "20:03",
+              "senderId": "P02",
+              "text": "灯架已经收到墙边了。",
+              "attachment": null
+            },
+            {
+              "id": "MSG-2004-IMG",
+              "time": "20:04",
+              "senderId": "P02",
+              "text": null,
+              "attachment": {
+                "type": "photo",
+                "photoId": "PHOTO-07",
+                "popupTitle": "灯架收纳情况"
+              }
+            },
+            {
+              "id": "MSG-2008",
+              "time": "20:08",
+              "senderId": "P05",
+              "text": "一楼还有两箱矿泉水。",
+              "attachment": null
+            },
+            {
+              "id": "MSG-2014",
+              "time": "20:14",
+              "senderId": "P02",
+              "text": "我先走了，明天见。",
+              "attachment": null
+            },
+            {
+              "id": "MSG-2016",
+              "time": "20:16",
+              "senderId": "P03",
+              "text": "海报还差一张，我等下去补印。",
+              "attachment": null
+            },
+            {
+              "id": "MSG-2020",
+              "time": "20:20",
+              "senderId": "P01",
+              "text": "相机放 304 柜子里了，最后走的人记得锁门。",
+              "attachment": null
+            },
+            {
+              "id": "MSG-2020-IMG",
+              "time": "20:20",
+              "senderId": "P01",
+              "text": null,
+              "attachment": {
+                "type": "photo",
+                "photoId": "PHOTO-B",
+                "popupTitle": "照片信息"
+              }
+            },
+            {
+              "id": "MSG-2024",
+              "time": "20:24",
+              "senderId": "P04",
+              "text": "我回 304 找一下充电器。",
+              "attachment": null
+            },
+            {
+              "id": "MSG-2033",
+              "time": "20:33",
+              "senderId": "P04",
+              "text": "找到了，我已经下楼。",
+              "attachment": null
+            },
+            {
+              "id": "MSG-2033-IMG",
+              "time": "20:33",
+              "senderId": "P04",
+              "text": null,
+              "attachment": {
+                "type": "record",
+                "icon": "📷",
+                "label": "一楼大厅照片",
+                "popupTitle": "照片信息",
+                "popupLines": [
+                  "拍摄时间：20:33",
+                  "拍摄者：周扬"
+                ]
+              }
+            },
+            {
+              "id": "MSG-2041-IMG",
+              "time": "20:41",
+              "senderId": "P03",
+              "text": null,
+              "attachment": {
+                "type": "photo",
+                "photoId": "PHOTO-C",
+                "popupTitle": "照片信息"
+              }
+            },
+            {
+              "id": "MSG-2045",
+              "time": "20:45",
+              "senderId": "P03",
+              "text": "海报正在补印。",
+              "attachment": null
+            },
+            {
+              "id": "MSG-2045-RCPT",
+              "time": "20:45",
+              "senderId": "P03",
+              "text": null,
+              "attachment": {
+                "type": "record",
+                "icon": "🧾",
+                "label": "付款截图",
+                "popupTitle": "付款记录",
+                "popupLines": [
+                  "付款时间：20:43",
+                  "收款方：校园打印店",
+                  "金额：¥18.00"
+                ]
+              }
+            },
+            {
+              "id": "MSG-2049",
+              "time": "20:49",
+              "senderId": "P05",
+              "text": "展板明天再搬可以吗？",
+              "attachment": null
+            },
+            {
+              "id": "MSG-2051",
+              "time": "20:51",
+              "senderId": "P01",
+              "text": "可以，先靠墙放。",
+              "attachment": null
+            },
+            {
+              "id": "MSG-2100",
+              "time": "21:00",
+              "senderId": "P01",
+              "text": "谁拿了相机？柜子里没有。",
+              "attachment": null
+            },
+            {
+              "id": "MSG-2102",
+              "time": "21:02",
+              "senderId": "P02",
+              "text": "我走的时候没看到相机。",
+              "attachment": null
+            },
+            {
+              "id": "MSG-2103",
+              "time": "21:03",
+              "senderId": "P04",
+              "text": "我只拿了充电器。",
+              "attachment": null
+            },
+            {
+              "id": "MSG-2105",
+              "time": "21:05",
+              "senderId": "P03",
+              "text": "我拍完照片就去打印店了。",
+              "attachment": null
+            }
+          ],
+          "inspectTargets": [
+            {
+              "id": "CHAT-FANGLI-CLAIM",
+              "label": "标记方立的离开说法",
+              "messageIds": [
+                "MSG-2014"
+              ],
+              "resultText": "方立在 20:14 主动制造了自己已经离开的印象，但这只是一句话。",
+              "grantsEvidenceIds": [
+                "E04"
+              ]
+            },
+            {
+              "id": "CHAT-ALIBIS",
+              "label": "核对沈悦和周扬的时间记录",
+              "messageIds": [
+                "MSG-2033-IMG",
+                "MSG-2045-RCPT"
+              ],
+              "resultText": "周扬 20:33 已到一楼；沈悦 20:43 已在打印店，两人的说法均有独立记录支持。",
+              "grantsEvidenceIds": [
+                "E05"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "CHAT-CHENCHEN",
+          "title": "陈晨",
+          "kind": "private",
+          "avatar": null,
+          "dateLabel": "9 月 19 日",
+          "lastTime": "09:12",
+          "preview": "这个是不是我们丢的那台？",
+          "badgeCondition": {
+            "type": "anyEvidence",
+            "evidenceIds": [
+              "E03",
+              "E06"
+            ]
+          },
+          "messages": [
+            {
+              "id": "MSG-CC1",
+              "time": "09:12",
+              "senderId": "P05",
+              "text": "社长，这个是不是我们丢的那台？",
+              "attachment": null
+            },
+            {
+              "id": "MSG-CC2",
+              "time": "09:12",
+              "senderId": "P05",
+              "text": null,
+              "attachment": {
+                "type": "productCard",
+                "icon": "📷",
+                "title": "九成新微单，急出",
+                "meta": "¥3299 · 1.2 km"
+              }
+            },
+            {
+              "id": "MSG-CC3",
+              "time": "09:12",
+              "senderId": "P05",
+              "text": "划痕的位置很像，卖家也是本校附近。",
+              "attachment": null
+            }
+          ]
+        },
+        {
+          "id": "CHAT-SHENYUE",
+          "title": "沈悦",
+          "kind": "private",
+          "avatar": null,
+          "dateLabel": "9 月 17 日",
+          "lastTime": "周五",
+          "preview": "收到，辛苦啦。",
+          "messages": [
+            {
+              "id": "MSG-SY1",
+              "time": "21:02",
+              "senderId": "P03",
+              "text": "社长，海报的字体文件我发到你邮箱了。",
+              "attachment": null
+            },
+            {
+              "id": "MSG-SY2",
+              "time": "21:05",
+              "senderId": "P01",
+              "text": "收到，辛苦啦。",
+              "attachment": null
+            }
+          ]
+        },
+        {
+          "id": "CHAT-ZHOUYANG",
+          "title": "周扬",
+          "kind": "private",
+          "avatar": null,
+          "dateLabel": "9 月 17 日",
+          "lastTime": "周五",
+          "preview": "好，麻烦了。",
+          "messages": [
+            {
+              "id": "MSG-ZY1",
+              "time": "16:40",
+              "senderId": "P04",
+              "text": "社长，器材柜的锁有点松，周六我带工具紧一下。",
+              "attachment": null
+            },
+            {
+              "id": "MSG-ZY2",
+              "time": "16:44",
+              "senderId": "P01",
+              "text": "好，麻烦了。",
+              "attachment": null
+            }
+          ]
+        },
+        {
+          "id": "CHAT-FANGLI",
+          "title": "方立",
+          "kind": "private",
+          "avatar": null,
+          "dateLabel": "9 月 11 日",
+          "lastTime": "9 月 11 日",
+          "preview": "好，你负责灯架和纸箱。",
+          "messages": [
+            {
+              "id": "MSG-FL1",
+              "time": "10:18",
+              "senderId": "P02",
+              "text": "社长，周六撤展我可以帮忙。",
+              "attachment": null
+            },
+            {
+              "id": "MSG-FL2",
+              "time": "10:21",
+              "senderId": "P01",
+              "text": "好，你负责灯架和纸箱。",
+              "attachment": null
+            }
+          ]
+        },
+        {
+          "id": "CHAT-TEACHER",
+          "title": "场地管理老师",
+          "kind": "private",
+          "avatar": "🧑‍🏫",
+          "dateLabel": "9 月 18 日",
+          "lastTime": "21:26",
+          "preview": "已经交了，钥匙放在服务台了。",
+          "messages": [
+            {
+              "id": "MSG-TC1",
+              "time": "21:24",
+              "senderId": "P06",
+              "text": "撤展结束后记得把钥匙交回一楼服务台。",
+              "attachment": null
+            },
+            {
+              "id": "MSG-TC2",
+              "time": "21:26",
+              "senderId": "P01",
+              "text": "已经交了，钥匙放在服务台了。",
+              "attachment": null
+            }
+          ]
+        }
+      ]
+    },
+    "doorLock": {
+      "id": "door-lock",
+      "appName": "智慧活动室",
+      "entryName": "304 门锁",
+      "entryIcon": "🚪",
+      "provider": "校园智慧门禁",
+      "home": {
+        "locationLabel": "学生活动中心 · 3 层",
+        "room": "学生活动中心 304",
+        "lockStatusLabel": "设备状态",
+        "lockStatus": "已上锁",
+        "onlineStatus": "设备在线",
+        "lastSyncLabel": "最近同步",
+        "lastSync": "09:18",
+        "adminLabel": "管理员",
+        "admin": "林夏",
+        "deviceLabel": "设备编号",
+        "deviceId": "AC-304-E",
+        "accessMode": "管理员授权 · 只读查看",
+        "recordsEntry": "开门记录",
+        "readonlyNote": "调查模式仅允许查看历史记录，远程开门、成员管理等操作已停用。"
+      },
+      "date": "9 月 18 日",
+      "filters": [
+        {"id": "all", "label": "全部"},
+        {"id": "enter", "label": "进入"},
+        {"id": "leave", "label": "离开"}
+      ],
+      "notice": "仅显示林夏有权限查看的当晚进出记录。林夏使用管理员常开权限，因此她在一楼撤展期间没有产生 304 门锁记录。",
+      "footerNote": "记录由双向门禁生成；管理员常开操作不计入个人进出记录。",
+      "detailLabels": [
+        "用户",
+        "方式",
+        "门锁",
+        "时间"
+      ],
+      "events": [
+        {
+          "id": "EVT-2046",
+          "personId": "P02",
+          "time": "20:46",
+          "action": "leave",
+          "status": "正常",
+          "detailValues": [
+            "方立",
+            "校园卡",
+            "304 东门",
+            "2026-09-18 20:46:18"
+          ]
+        },
+        {
+          "id": "EVT-2037",
+          "personId": "P03",
+          "time": "20:37",
+          "action": "leave",
+          "status": "正常",
+          "detailValues": [
+            "沈悦",
+            "校园卡",
+            "304 东门",
+            "2026-09-18 20:37:42"
+          ]
+        },
+        {
+          "id": "EVT-2032",
+          "personId": "P04",
+          "time": "20:32",
+          "action": "leave",
+          "status": "正常",
+          "detailValues": [
+            "周扬",
+            "校园卡",
+            "304 东门",
+            "2026-09-18 20:32:05"
+          ]
+        },
+        {
+          "id": "EVT-2029",
+          "personId": "P04",
+          "time": "20:29",
+          "action": "enter",
+          "status": "正常",
+          "detailValues": [
+            "周扬",
+            "校园卡",
+            "304 东门",
+            "2026-09-18 20:29:31"
+          ]
+        },
+        {
+          "id": "EVT-1956",
+          "personId": "P03",
+          "time": "19:56",
+          "action": "enter",
+          "status": "正常",
+          "detailValues": [
+            "沈悦",
+            "校园卡",
+            "304 东门",
+            "2026-09-18 19:56:12"
+          ]
+        },
+        {
+          "id": "EVT-1840",
+          "personId": "P02",
+          "time": "18:40",
+          "action": "enter",
+          "status": "正常",
+          "detailValues": [
+            "方立",
+            "校园卡",
+            "304 东门",
+            "2026-09-18 18:40:07"
+          ]
+        }
+      ],
+      "actionLabels": {
+        "enter": "进入",
+        "leave": "离开"
+      },
+      "inspectTargets": [
+        {
+          "id": "LOCK-FANGLI-EXIT",
+          "label": "标记方立的离开记录",
+          "eventId": "EVT-2046",
+          "resultText": "方立直到 20:46 才正式离开，与他声称 20:14 左右已经离开明显冲突。",
+          "grantsEvidenceIds": [
+            "E06"
+          ]
+        }
+      ]
+    },
+    "marketplace": {
+      "appName": "闲置交易",
+      "entryLabel": "查看商品",
+      "inboxNotice": "次日 09:12，一名社员把同城商品链接发给林夏。",
+      "listing": {
+        "id": "LISTING-01",
+        "title": "九成新微单，急出，可小刀",
+        "price": "¥3299",
+        "postedAtLabel": "发布于 9 月 18 日 21:18",
+        "distance": "距你 1.2 km",
+        "delivery": "支持同城自提",
+        "description": "自用相机，功能正常，轻微使用痕迹。只有机身和包，不议大刀，今晚或明天可取。",
+        "images": [
+          {
+            "id": "MKT-IMG-1",
+            "asset": "/marketplace/01-front-scratch.webp",
+            "caption": "相机正面",
+            "compareFeature": "机身右上角的白色划痕",
+            "compareWith": "PHOTO-A"
+          },
+          {
+            "id": "MKT-IMG-2",
+            "asset": "/marketplace/02-bag-threads.webp",
+            "caption": "相机包",
+            "compareFeature": "拉链孔残留的红色线头",
+            "compareWith": "PHOTO-A"
+          },
+          {
+            "id": "MKT-IMG-3",
+            "asset": "/marketplace/03-back-model.webp",
+            "caption": "相机背面"
+          }
+        ],
+        "seller": {
+          "nickname": "南屿",
+          "phoneSuffix": "7314",
+          "registeredLabel": "注册 2 年｜信用良好",
+          "listingsCount": "发布 3 件商品"
+        }
+      },
+      "inspectTargets": [
+        {
+          "id": "LISTING-ITEM-MATCH",
+          "label": "对比商品照片与器材登记照",
+          "requiresEvidenceIds": [
+            "E01"
+          ],
+          "resultText": "商品的型号、白色划痕与红色线头均和社团失物一致，可以确认是同一台相机。",
+          "grantsEvidenceIds": [
+            "E07"
+          ]
+        },
+        {
+          "id": "LISTING-SELLER-MATCH",
+          "label": "核对卖家联系尾号与通讯录",
+          "requiresSeenIds": [
+            "MKT-SELLER-PHONE",
+            "CONTACTS-SELLER-MATCH"
+          ],
+          "resultText": "卖家联系尾号 7314 与方立在通讯录中的手机尾号一致，可将商品发布账号关联到方立。",
+          "grantsEvidenceIds": [
+            "E08"
+          ]
+        }
+      ]
+    }
+  },
+  "evidence": [
+    {
+      "id": "E01",
+      "title": "相机的独有外观特征",
+      "sourceLabel": "图库｜器材登记照",
+      "timelineOrder": 10,
+      "timelineTime": "8月12日",
+      "timelineDesc": "登记照记录相机独有特征：白色划痕 + 红绳",
+      "timeGroup": "G1",
+      "hint": "图库中 8 月 12 日的器材登记照，检查相机和相机包的细节。",
+      "summary": "社团相机右上角有一道白色划痕，灰色相机包拉链上系着红绳。",
+      "playerConclusion": "这些独特特征可以用来确认之后出现的相机是否为同一台。"
+    },
+    {
+      "id": "E02",
+      "title": "20:20 的器材柜照片",
+      "sourceLabel": "图库｜器材柜照片",
+      "timelineOrder": 30,
+      "timelineTime": "20:20",
+      "timelineDesc": "器材柜照片：相机仍在柜中",
+      "timeGroup": "G2",
+      "hint": "摄影社群聊里 20:20 的器材柜照片，查看拍摄时间与柜内物品。",
+      "summary": "20:20 时，相机和相机包仍在 304 的器材柜中。",
+      "playerConclusion": "相机不是在活动结束前丢失的。"
+    },
+    {
+      "id": "E03",
+      "title": "方立帆布袋中的灰色包角",
+      "sourceLabel": "图库｜走廊收尾照",
+      "timelineOrder": 50,
+      "timelineTime": "20:41",
+      "timelineDesc": "走廊照片：方立袋口露出灰色包角和红绳",
+      "timeGroup": "G3",
+      "hint": "沈悦 20:41 发到群里的走廊照片，放大画面右侧看看。",
+      "summary": "20:41，方立在 304 门口整理帆布袋，袋口露出灰色包角和红绳。",
+      "playerConclusion": "他准备离开时携带的物品疑似失窃相机包，但还需要其他证据确认。"
+    },
+    {
+      "id": "E04",
+      "title": "方立的提前离开说法",
+      "sourceLabel": "微信｜摄影社作品展群聊",
+      "timelineOrder": 20,
+      "timelineTime": "20:14",
+      "timelineDesc": "方立在群聊说“我先走了”",
+      "timeGroup": "G2",
+      "hint": "摄影社群聊里，方立在 20:14 说过的那句话值得核对。",
+      "summary": "方立在 20:14 的群聊中说“我先走了”。",
+      "playerConclusion": "这只能证明他的说法，不能证明实际离开时间。"
+    },
+    {
+      "id": "E05",
+      "title": "沈悦与周扬的时间记录",
+      "sourceLabel": "微信｜摄影社作品展群聊",
+      "timelineOrder": 40,
+      "timelineTime": "20:33",
+      "timelineDesc": "周扬已到一楼，沈悦 20:43 在打印店（有不在场记录）",
+      "timeGroup": "G2",
+      "hint": "群聊中周扬的一楼大厅照片和沈悦的付款截图，两条记录都点开看看。",
+      "summary": "周扬 20:33 已到一楼，沈悦 20:43 已在打印店。",
+      "playerConclusion": "两人的时间线都有独立记录支持。"
+    },
+    {
+      "id": "E06",
+      "title": "方立 20:46 的离开记录",
+      "sourceLabel": "微信｜304 门锁小程序",
+      "timelineOrder": 60,
+      "timelineTime": "20:46",
+      "timelineDesc": "门锁记录：方立实际 20:46 才离开 304",
+      "timeGroup": "G3",
+      "hint": "在微信聊天列表顶部下拉，打开 304 门锁小程序查看开门记录。",
+      "summary": "门锁记录显示方立实际到 20:46 才离开 304。",
+      "playerConclusion": "他的实际离开时间与 20:14 的说法矛盾。"
+    },
+    {
+      "id": "E07",
+      "title": "二手商品与失物特征一致",
+      "sourceLabel": "闲置交易｜商品详情",
+      "timelineOrder": 70,
+      "timelineTime": "21:18",
+      "timelineDesc": "二手平台出现同款相机：划痕 + 红绳一致",
+      "timeGroup": "G4",
+      "hint": "陈晨私聊里的商品链接，对比商品照片与器材登记照。",
+      "summary": "商品照片中的型号、白色划痕和红色线头与社团失物一致。",
+      "playerConclusion": "二手商品就是失窃的社团相机。"
+    },
+    {
+      "id": "E08",
+      "title": "卖家手机尾号与方立一致",
+      "sourceLabel": "闲置交易｜商品详情 × 通讯录",
+      "timelineOrder": 80,
+      "timelineTime": "21:18",
+      "timelineDesc": "卖家联系尾号 7314 ＝ 方立的通讯录尾号",
+      "timeGroup": "G4",
+      "hint": "留意是否还有另一处出现了相同的脱敏联系尾号。",
+      "summary": "二手平台卖家的联系尾号 7314 与方立在通讯录中的手机尾号一致。",
+      "playerConclusion": "方立发布了这条二手商品信息。"
+    }
+  ],
+  "clueGroups": [
+    { "id": "G1", "label": "案发前 · 8 月 12 日", "order": 1 },
+    { "id": "G2", "label": "9 月 18 日晚 · 20:10 – 20:40", "order": 2 },
+    { "id": "G3", "label": "9 月 18 日晚 · 20:40 – 21:00", "order": 3 },
+    { "id": "G4", "label": "案发后 · 21:00 以后", "order": 4 }
+  ],
+  "conclusionReport": {
+    "title": "提交调查结论",
+    "intro": "回答三个问题，指出真相。答错会有提示，可以修改后重新提交。",
+    "questions": [
+      {
+        "id": "Q1",
+        "shortTitle": "最后确认时间",
+        "prompt": "相机最后一次被确认仍在器材柜是什么时间？",
+        "options": [
+          { "id": "Q1-A", "label": "20:10" },
+          { "id": "Q1-B", "label": "20:20" },
+          { "id": "Q1-C", "label": "20:41" },
+          { "id": "Q1-D", "label": "21:00" }
+        ],
+        "correctOptionIds": ["Q1-B"],
+        "wrongHint": "提示：图库里有一张 20:20 拍的器材柜照片，相机和包都还在柜中。"
+      },
+      {
+        "id": "Q2",
+        "shortTitle": "谁在撒谎",
+        "prompt": "谁对自己的离开时间撒了谎？",
+        "options": [
+          { "id": "Q2-A", "label": "林夏" },
+          { "id": "Q2-B", "label": "方立" },
+          { "id": "Q2-C", "label": "沈悦" },
+          { "id": "Q2-D", "label": "周扬" }
+        ],
+        "correctOptionIds": ["Q2-B"],
+        "wrongHint": "提示：对比群聊里“我先走了”的说法，和 304 门锁小程序的开门记录。"
+      },
+      {
+        "id": "Q3",
+        "shortTitle": "谁拿走了相机",
+        "prompt": "谁拿走了相机并挂到二手平台出售？",
+        "options": [
+          { "id": "Q3-A", "label": "林夏" },
+          { "id": "Q3-B", "label": "方立" },
+          { "id": "Q3-C", "label": "沈悦" },
+          { "id": "Q3-D", "label": "周扬" }
+        ],
+        "correctOptionIds": ["Q3-B"],
+        "wrongHint": "提示：先确认二手商品的独有特征，再核对卖家联系尾号与通讯录中的手机尾号。"
+      }
+    ],
+    "submitButtonLabel": "提交调查结论"
+  },
+  "ending": {
+    "id": "ENDING-01",
+    "title": "相机已找回",
+    "paragraphs": [
+      "保卫处老师根据商品链接联系二手平台，并要求方立到场说明情况。",
+      "方立承认自己一时冲动拿走相机，还没有完成交易。",
+      "相机于当天中午被归还，储存卡和镜头均未损坏。",
+      "摄影社撤销了商品链接，并重新制定了器材登记与上锁制度。"
+    ],
+    "finalMessage": {
+      "sender": "林夏",
+      "text": "相机找回来了。以后最后走的人，要和我一起拍照确认器材柜上锁。"
+    },
+    "restartButtonLabel": "重新调查"
+  },
+  "guide": {
+    "icon": "📖",
+    "title": "调查说明书",
+    "items": [
+      {
+        "icon": "🎬",
+        "title": "案件引入",
+        "text": "开场视频是案件的基本信息，可随时在案件详情中重播。"
+      },
+      {
+        "icon": "🔍",
+        "title": "收集线索",
+        "text": "检查手机里各个软件的信息，关键内容会自动记录为线索。"
+      },
+      {
+        "icon": "💡",
+        "title": "线索提示",
+        "text": "可使用调查积分兑换未发现线索的位置提示；跨来源线索只会提示寻找相互呼应的信息。"
+      },
+      {
+        "icon": "✅",
+        "title": "提交结论",
+        "text": "必须先收集全部 8 条线索，之后才能提交三道问题的答案并结案。"
+      },
+      {
+        "icon": "🏆",
+        "title": "调查评级",
+        "text": "收集的线索越完整、提交次数越少，结案评级越高。"
+      }
+    ],
+    "footer": "快开始你的探索之旅吧！",
+    "startButtonLabel": "开始探索"
+  },
+  "uiText": {
+    "backToHome": "返回手机桌面",
+    "back": "返回",
+    "dialogConfirm": "确定",
+    "viewRecord": "点击查看",
+    "recordViewed": "已查看",
+    "chatMembersFormat": "{count} 人",
+    "miniprogramRecentLabel": "最近使用的小程序",
+    "miniprogramPullHint": "下拉查看小程序",
+    "miniprogramCollapse": "收起",
+    "timelineTitle": "线索时间线",
+    "timelineIntro": "查看手机中的可疑内容时，线索会自动按时间记录在这里。点击时间段查看线索，对照时间就能看出矛盾。",
+    "timelineProgressFormat": "已记录 {count} / {total} 条线索",
+    "timelineUnknownTime": "？:？？",
+    "timelineUnknownDesc": "还有线索没有发现，去手机里找找。",
+    "timelineHintLabel": "线索提示",
+    "timelineGroupCountFormat": "{count} / {total}",
+    "submitConclusionLabel": "✓ 提交结论",
+    "backToProgressLabel": "返回线索进度",
+    "sellerPhoneFormat": "📱 联系电话 138 **** {suffix}",
+    "sellerPhoneViewedLabel": "已标记为半条线索",
+    "sellerPhoneCheckLabel": "查看联系尾号",
+    "crossCheckHalfLabel": "已标记为半条线索",
+    "crossCheckHalfHint": "努力找找与其相互呼应的线索吧。",
+    "crossCheckCompleteLabel": "已记录完整线索",
+    "marketCompareBtn": "🔍 对比器材登记照",
+    "marketNeedE01Hint": "先查看图库中的器材登记照，确认失物的独有特征。",
+    "marketCompareTitle": "特征对比",
+    "marketCompareRegLabel": "器材登记照",
+    "marketCompareMktLabel": "商品照片",
+    "contactsSearchPlaceholder": "搜索姓名或尾号",
+    "contactsNoResult": "没有找到匹配的联系人",
+    "contactsPhoneFormat": "138 **** {suffix}",
+    "contactsRoleLabel": "备注",
+    "contactsGroupsTitle": "分组"
+  },
+  "initialState": {
+    "points": 200,
+    "investigationStartedAt": null,
+    "completionElapsedSeconds": null,
+    "completionReward": 0,
+    "hintedMaterialIds": [],
+    "observedMaterialIds": [],
+    "seenContentIds": [],
+    "reportAnswers": {},
+    "reportSubmitCount": 0,
+    "endingUnlocked": false
+  }
+}
