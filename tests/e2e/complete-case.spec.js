@@ -6,17 +6,17 @@ async function openGalleryClue(page, title, inspectLabel) {
   await page.getByRole('button', { name: /← 图库/ }).click();
 }
 
-test('完整调查：半线索合并、8/8 解锁并正确结案', async ({ page }) => {
+test('完整调查：半线索合并、关键证据链完整后解锁并正确结案', async ({ page }) => {
   await page.goto('/');
   await page.evaluate(() => localStorage.clear());
   await page.reload();
 
   await page.locator('.login-page').click();
-  await page.getByRole('button', { name: /登录并开始值班/ }).click();
+  await page.getByRole('button', { name: /解锁手机，开始回想/ }).click();
   await page.getByRole('button', { name: /跳过/ }).click();
   await page.getByRole('button', { name: /开始检查手机/ }).click();
 
-  const submitConclusion = page.getByRole('button', { name: /提交结论/ });
+  const submitConclusion = page.locator('.conclusion-trigger');
   await expect(submitConclusion).toBeDisabled();
 
   await page.getByRole('button', { name: /图库/ }).click();
@@ -59,7 +59,7 @@ test('完整调查：半线索合并、8/8 解锁并正确结案', async ({ page
   await expect(page.getByText('已记录完整线索', { exact: true })).toBeVisible();
   await page.getByRole('button', { name: '返回手机桌面' }).click();
 
-  await expect(page.getByText('8 / 8', { exact: true })).toBeVisible();
+  await expect(page.locator('.case-detail-trigger')).toContainText('关键证据链已完整');
   await expect(submitConclusion).toBeEnabled();
   await submitConclusion.click();
 
@@ -71,4 +71,6 @@ test('完整调查：半线索合并、8/8 解锁并正确结案', async ({ page
 
   await expect(page.getByText('相机已找回', { exact: true })).toBeVisible();
   await expect(page.getByText('已结案', { exact: true })).toBeVisible();
+  await expect(page.locator('.settlement-rating-badge')).toHaveText('S');
+  await expect(page.locator('.settlement-stat').filter({ hasText: '使用提示' }).locator('b')).toHaveText('0');
 });

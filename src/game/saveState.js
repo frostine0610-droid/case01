@@ -1,3 +1,5 @@
+import { getBrowseItemIds } from './engine.js';
+
 const VALID_SCREENS = new Set(['login', 'briefing', 'phone', 'settlement']);
 
 function finiteNumber(value, fallback, { min = 0, integer = false } = {}) {
@@ -36,6 +38,7 @@ export function sanitizeGameState(value, gameData) {
   }
 
   const evidenceIds = new Set(gameData.evidence.map((item) => item.id));
+  const browseItemIds = getBrowseItemIds(gameData);
   return {
     ...initial,
     points: finiteNumber(value.points, initial.points, { min: 0, integer: true }),
@@ -45,6 +48,7 @@ export function sanitizeGameState(value, gameData) {
     hintedMaterialIds: uniqueStrings(value.hintedMaterialIds, evidenceIds),
     observedMaterialIds: uniqueStrings(value.observedMaterialIds, evidenceIds),
     seenContentIds: uniqueStrings(value.seenContentIds),
+    readContentIds: uniqueStrings(value.readContentIds, browseItemIds),
     reportAnswers: sanitizeAnswers(value.reportAnswers, gameData),
     reportSubmitCount: finiteNumber(value.reportSubmitCount, 0, { min: 0, integer: true }),
     endingUnlocked: value.endingUnlocked === true,

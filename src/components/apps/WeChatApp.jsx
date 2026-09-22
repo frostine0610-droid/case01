@@ -15,7 +15,7 @@ function formatText(template, vars) {
 // 微信应用：聊天列表 → 会话详情 / 304 门锁小程序
 // 关键交互：查看消息上下文、附件与门锁详情后，自动记录为线索。
 export default function WeChatApp() {
-  const { gameData, gameState, recordObservation, viewMaterial, markSeen } = useGame();
+  const { gameData, gameState, recordObservation, viewMaterial, markSeen, markRead } = useGame();
   const { uiText } = gameData;
   const wechat = gameData.content.wechat;
   const doorLock = gameData.content.doorLock;
@@ -73,18 +73,19 @@ export default function WeChatApp() {
 
   // 聊天列表不显示未读角标（按设定保持列表简洁）
 
-  // 单条消息的检查目标（如方立 20:14 的说法 → E04）
+  // 单条消息对应的检查目标
   const targetOfMessage = (chat, messageId) =>
     (chat.inspectTargets || []).find(
       (t) => t.messageIds.length === 1 && t.messageIds.includes(messageId)
     );
-  // 多条消息组合的检查目标（E05：两条时间记录）
+  // 多条消息组合形成的检查目标
   const groupTargetOf = (chat) =>
     (chat.inspectTargets || []).find((t) => t.messageIds.length > 1);
 
   const openChat = (chatId) => {
     setActiveChatId(chatId);
     setAttachmentView(null);
+    markRead(`chat:${chatId}`);
   };
 
   // 点击附件：查看两条独立时间记录后，自动形成一条时间线笔记。
@@ -145,7 +146,10 @@ export default function WeChatApp() {
     }
     if (att.type === 'productCard') {
       return (
-        <button className="wechat-att-product" onClick={() => setMarketOpen(true)}>
+        <button className="wechat-att-product" onClick={() => {
+          markRead('market:listing');
+          setMarketOpen(true);
+        }}>
           <span className="wechat-att-product-img">{att.icon}</span>
           <span className="wechat-att-product-info">
             <b>{att.title}</b>
@@ -244,7 +248,7 @@ export default function WeChatApp() {
               {doorLockPage === 'records' ? doorLock.date : doorLock.entryName}
             </span>
           </div>
-          <span className="doorlock-capsule" aria-hidden="true">•••　○</span>
+          <span className="doorlock-capsule" aria-hidden="true">••• ○</span>
         </div>
 
         {doorLockPage === 'home' ? (
@@ -329,6 +333,7 @@ export default function WeChatApp() {
                       className="doorlock-event-row"
                       onClick={() => {
                         setExpandedEventId(expanded ? null : event.id);
+                        if (!expanded) markRead(`doorlock:${event.id}`);
                         if (!expanded && isTarget && targetEvidenceId) {
                           recordObservation(targetEvidenceId);
                         }

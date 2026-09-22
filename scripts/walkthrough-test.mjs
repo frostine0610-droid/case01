@@ -2,7 +2,11 @@
 import { readFileSync } from 'fs';
 import {
   calculateCompletionReward,
+  calculateInvestigationRating,
   canSubmitReport,
+  getBrowseItemIds,
+  getBrowseProgress,
+  getEvidenceProgress,
   gradeReport,
   redeemClueHint,
 } from '../src/game/engine.js';
@@ -26,6 +30,7 @@ check('初始线索为空', gameData.initialState.observedMaterialIds, []);
 check('初始提交次数为 0', gameData.initialState.reportSubmitCount, 0);
 check('初始调查积分为 200', gameData.initialState.points, 200);
 check('初始已兑换提示为空', gameData.initialState.hintedMaterialIds, []);
+check('初始浏览记录为空', gameData.initialState.readContentIds, []);
 check('初始屏幕为登录页', gameData.game.startScreenId, 'login');
 check('开场视频包含 5 个场景', gameData.briefing.video.scenes.length, 5);
 check('登录页有启动日志', gameData.login.bootLines.length >= 3, true);
@@ -52,20 +57,20 @@ check('卖家尾号与通讯录人物尾号可核对', (() => {
 check('二手平台不再依赖昵称匹配数据', gameData.content.marketplace.profileMatch === undefined, true);
 check('尾号核对由两个来源共同组成一条线索', (() => {
   const target = gameData.content.marketplace.inspectTargets.find((item) =>
-    item.grantsEvidenceIds.includes('E08')
+    item.type === 'sellerIdentityMatch'
   );
   return target.requiresSeenIds.length === 2 && target.grantsEvidenceIds.length === 1;
 })(), true);
 check('单边尾号查看不足以形成完整线索', (() => {
   const target = gameData.content.marketplace.inspectTargets.find((item) =>
-    item.grantsEvidenceIds.includes('E08')
+    item.type === 'sellerIdentityMatch'
   );
   const oneSide = new Set([target.requiresSeenIds[0]]);
   return !target.requiresSeenIds.every((id) => oneSide.has(id));
 })(), true);
 check('双边尾号查看后才能形成完整线索', (() => {
   const target = gameData.content.marketplace.inspectTargets.find((item) =>
-    item.grantsEvidenceIds.includes('E08')
+    item.type === 'sellerIdentityMatch'
   );
   const bothSides = new Set(target.requiresSeenIds);
   return target.requiresSeenIds.every((id) => bothSides.has(id));
@@ -78,6 +83,10 @@ check('微信会话不再开放个人资料入口', gameData.content.wechat.chat
 check('调查说明书存在且条目完整', (() => {
   const g = gameData.guide;
   return Boolean(g && g.title && Array.isArray(g.items) && g.items.length >= 4 && g.footer && g.startButtonLabel);
+})(), true);
+check('调查说明书明确区分干扰信息与关键线索', (() => {
+  const text = gameData.guide.items.map((item) => item.text).join('');
+  return text.includes('无关') && text.includes('无需浏览全部信息') && text.includes('所有关键线索');
 })(), true);
 check('每道题都有答错提示', gameData.conclusionReport.questions.every((q) => q.wrongHint), true);
 check('每道题都有正确答案', gameData.conclusionReport.questions.every((q) => q.correctOptionIds.length === 1), true);
@@ -120,6 +129,17 @@ console.log('\n[4] 全线索提交门槛');
     ...gameData.initialState,
     observedMaterialIds: gameData.evidence.map((item) => item.id),
   }, gameData), true);
+  const noisyProgress = getEvidenceProgress({
+    ...gameData.initialState,
+    observedMaterialIds: [
+      ...gameData.evidence.map((item) => item.id),
+      gameData.evidence[0].id,
+      'INVALID-EVIDENCE',
+    ],
+  }, gameData);
+  check('重复和无效 ID 不会让线索数超过总数', noisyProgress.found, gameData.evidence.length);
+  check('线索进度百分比不会超过 100%', noisyProgress.percent, 100);
+  check('重复和无效 ID 不会产生负数缺失量', noisyProgress.missing, 0);
   // 提示内容不泄露答案本身
   check('提示不包含正确选项文字', (() => {
     const r = gradeReport({ ...correctAnswers, Q3: 'Q3-A' }, gameData);
@@ -153,6 +173,7 @@ console.log('\n[6] 存档校验与恢复');
     observedMaterialIds: ['E01', 'E01', 'INVALID'],
     hintedMaterialIds: 'not-an-array',
     seenContentIds: [null, 'MKT-SELLER-PHONE', 'MKT-SELLER-PHONE'],
+    readContentIds: ['gallery:PHOTO-A', 'gallery:PHOTO-A', 'INVALID'],
     reportAnswers: { Q1: 'Q1-B', Q2: 'INVALID' },
     reportSubmitCount: -5,
     endingUnlocked: 'yes',
@@ -161,6 +182,7 @@ console.log('\n[6] 存档校验与恢复');
   check('线索 ID 会去重并过滤无效值', sanitized.observedMaterialIds, ['E01']);
   check('错误类型的提示数组会被清空', sanitized.hintedMaterialIds, []);
   check('已查看内容只保留唯一字符串', sanitized.seenContentIds, ['MKT-SELLER-PHONE']);
+  check('浏览记录会去重并过滤无效信息 ID', sanitized.readContentIds, ['gallery:PHOTO-A']);
   check('报告答案只保留有效选项', sanitized.reportAnswers, { Q1: 'Q1-B' });
   check('负数提交次数归零', sanitized.reportSubmitCount, 0);
   check('非布尔结案状态不能解锁结局', sanitized.endingUnlocked, false);
@@ -180,6 +202,52 @@ console.log('\n[6] 存档校验与恢复');
   storage.value = '{bad json';
   check('损坏 JSON 存档会被忽略', loadSavedSession(storage, 'save', 11, gameData), null);
   check('损坏 JSON 存档会被清除', storage.value, null);
+}
+
+console.log('\n[7] 独立浏览记录');
+{
+  const allBrowseIds = [...getBrowseItemIds(gameData)];
+  const initialBrowse = getBrowseProgress(gameData.initialState, gameData);
+  check('浏览记录初始为 0%', initialBrowse.percent, 0);
+  check('浏览记录包含日常干扰应用', initialBrowse.groups.some((group) => group.id === 'daily' && group.total > 0), true);
+  const completeBrowse = getBrowseProgress({ readContentIds: [...allBrowseIds, 'INVALID', allBrowseIds[0]] }, gameData);
+  check('全部信息打开后浏览记录为 100%', completeBrowse.percent, 100);
+  check('浏览记录不影响结案线索门槛', canSubmitReport({ readContentIds: allBrowseIds }, gameData), false);
+}
+
+console.log('\n[8] 调查评级');
+{
+  const ratingConfig = gameData.settlement.ratingConfig;
+  check('一次提交、零提示且 5 分钟内获得 S', calculateInvestigationRating({
+    submitCount: 1,
+    hintCount: 0,
+    elapsedSeconds: 300,
+  }, ratingConfig), 'S');
+  check('超过 5 分钟不能获得 S，但仍可获得 A', calculateInvestigationRating({
+    submitCount: 1,
+    hintCount: 0,
+    elapsedSeconds: 301,
+  }, ratingConfig), 'A');
+  check('使用一次提示且三次内提交获得 A', calculateInvestigationRating({
+    submitCount: 3,
+    hintCount: 1,
+    elapsedSeconds: 120,
+  }, ratingConfig), 'A');
+  check('使用两次提示降为 B', calculateInvestigationRating({
+    submitCount: 1,
+    hintCount: 2,
+    elapsedSeconds: 120,
+  }, ratingConfig), 'B');
+  check('提交超过三次降为 B', calculateInvestigationRating({
+    submitCount: 4,
+    hintCount: 0,
+    elapsedSeconds: 120,
+  }, ratingConfig), 'B');
+  check('旧存档缺少完成时间时最高为 A', calculateInvestigationRating({
+    submitCount: 1,
+    hintCount: 0,
+    elapsedSeconds: null,
+  }, ratingConfig), 'A');
 }
 
 console.log(`\n结果：${passed} 通过 / ${failed} 失败`);

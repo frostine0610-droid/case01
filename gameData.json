@@ -11,27 +11,28 @@
     "startScreenId": "login"
   },
   "login": {
-    "systemName": "校园保卫处 · 办公系统",
-    "systemVersion": "v2.6.1",
+    "systemName": "HUAWEI Mate 60",
+    "systemVersion": "EMUI 14.2",
+    "logoIcon": "📷",
     "bootLines": [
-      "正在连接保卫处内网……",
-      "安全组件自检通过",
-      "读取值班表：今日值班 —— 学生助理（你）",
-      "发现 1 条待办：新收案 2026-0918"
+      "正在开机……",
+      "已连接校园 Wi-Fi · 学生活动中心",
+      "微信：作品展群昨晚有新消息",
+      "锁屏备忘：相机不见了 —— 回想 9 月 18 日那一夜"
     ],
-    "roleLabel": "岗位",
-    "roleName": "学生助理 · 物证检查",
-    "operatorLabel": "值班人",
-    "operatorName": "助理",
-    "badgeLabel": "工号",
-    "badgeNo": "BAO-2026-073",
-    "passwordLabel": "口令",
-    "noticeLabel": "待办提醒",
-    "noticeText": "新收案 1 条：失物登记 2026-0918（待处理）",
-    "loginButtonLabel": "登录并开始值班",
-    "loggingInLabel": "正在核验身份……",
-    "successLabel": "身份核验通过",
-    "dutyHint": "仅限工作使用 · 全部操作留痕",
+    "roleLabel": "身份",
+    "roleName": "摄影社社长 · 手机机主",
+    "operatorLabel": "机主",
+    "operatorName": "林夏",
+    "badgeLabel": "学号",
+    "badgeNo": "2023-1121",
+    "passwordLabel": "锁屏密码",
+    "noticeLabel": "锁屏提醒",
+    "noticeText": "昨夜 21:00 清点器材时，相机从 304 器材柜中丢失。",
+    "loginButtonLabel": "解锁手机，开始回想",
+    "loggingInLabel": "正在解锁……",
+    "successLabel": "解锁成功",
+    "dutyHint": "昨晚的一切，都留在你的手机里。",
     "dateLabel": "9 月 19 日 星期六 09:20"
   },
   "settlement": {
@@ -41,27 +42,31 @@
     "stampText": "已结案",
     "statsTitle": "本次调查统计",
     "statLabels": {
-      "clues": "收集线索",
+      "clues": "关键线索",
       "reward": "结案奖励",
       "submits": "报告提交",
-      "focus": "关键人物"
+      "hints": "使用提示"
     },
     "statUnits": {
-      "clues": "条",
+      "clues": "全部收集",
       "reward": "积分",
       "submits": "次",
-      "focus": "人"
+      "hints": "次"
     },
     "ratingTitle": "调查评级",
     "ratingLevels": {
-      "S": { "label": "S · 完美侦探", "desc": "收集全部线索，一次提交即结案" },
-      "A": { "label": "A · 敏锐调查员", "desc": "思路清晰，证据链基本完整" },
-      "B": { "label": "B · 案件了结", "desc": "真相大白，下次可以更细心一些" }
+      "S": { "label": "S · 完美侦探", "desc": "一次提交正确、未使用提示，并在 5 分钟内完成" },
+      "A": { "label": "A · 敏锐调查员", "desc": "三次内提交正确，且最多使用一次提示" },
+      "B": { "label": "B · 案件了结", "desc": "成功查明真相；减少提示或提交次数可提高评级" }
+    },
+    "ratingConfig": {
+      "S": { "maxSubmitCount": 1, "maxHintCount": 0, "maxSeconds": 300 },
+      "A": { "maxSubmitCount": 3, "maxHintCount": 1 }
     },
     "timelineTitle": "真相时间线",
-    "endButtonLabel": "结束本次值班",
-    "endHint": "结束后将退出登录，可重新登录再次调查",
-    "backButtonLabel": "返回案件",
+    "endButtonLabel": "结束调查",
+    "endHint": "结束后将锁定手机，可随时重新开始调查",
+    "backButtonLabel": "返回手机",
     "rewardConfig": {
       "tiers": [
         { "maxSeconds": 180, "points": 300, "label": "3 分钟内完成" },
@@ -72,8 +77,8 @@
     }
   },
   "player": {
-    "role": "学校保卫处学生助理",
-    "task": "检查林夏提供的手机资料，确认相机最后出现的时间、谁在失踪时仍留在活动室，以及谁拿走并准备出售相机。",
+    "role": "摄影社社长（你）",
+    "task": "翻开自己的手机，确认相机最后出现的时间、谁在你清点器材时仍留在活动室，以及谁拿走并准备出售相机。",
     "permissionsTitle": "可以做的",
     "restrictionsTitle": "不能做的",
     "permissions": [
@@ -108,26 +113,26 @@
           "duration": 4000,
           "image": "/gallery/06-equipment-cabinet.webp",
           "kicker": "20:20",
-          "caption": "相机和相机包被放进器材柜——这是它最后一次被确认在柜中。"
+          "caption": "你把相机和相机包锁进器材柜——这是它最后一次被确认在柜中。"
         },
         {
           "id": "VS3",
           "duration": 3500,
           "image": "/gallery/12-activity-center-night.webp",
           "kicker": "21:00",
-          "caption": "活动结束，社长林夏清点器材时发现相机丢失。"
+          "caption": "活动结束，你清点器材时发现相机丢失。"
         },
         {
           "id": "VS4",
           "duration": 4000,
           "kicker": "四位在场社员",
-          "caption": "林夏、方立、沈悦、周扬都曾在 304 逗留。活动室没有监控。"
+          "caption": "你、方立、沈悦、周扬都曾在 304 逗留。活动室没有监控。"
         },
         {
           "id": "VS5",
           "duration": 3500,
           "kicker": "你的任务",
-          "caption": "查看这部手机里的图库、微信和交易记录，找出相机的下落。"
+          "caption": "那一晚的一切都留在你的手机里。回看图库、微信和交易记录，找出相机的下落。"
         }
       ]
     }
@@ -197,10 +202,9 @@
       "weather": "☀️ 晴 24°",
       "wallpaper": "/wallpaper-light.jpg",
       "network": "Wi-Fi",
-      "batteryPercent": 82,
-      "modeLabel": "只读调查模式"
+      "batteryPercent": 82
     },
-    "irrelevantAppToast": "与本案无关，调查模式下不可访问。",
+    "irrelevantAppToast": "与找回相机无关，先专注手头的线索。",
     "apps": [
       {
         "id": "sys-dialer",
@@ -291,12 +295,7 @@
         "name": "微信",
         "icon": "💬",
         "kind": "key",
-        "page": 2,
-        "badgeCondition": {
-          "type": "anyEvidence",
-          "evidenceIds": ["E03", "E06"]
-        },
-        "badgeText": "新线索"
+        "page": 2
       },
       {
         "id": "express",
@@ -1036,13 +1035,6 @@
           "dateLabel": "9 月 19 日",
           "lastTime": "09:12",
           "preview": "这个是不是我们丢的那台？",
-          "badgeCondition": {
-            "type": "anyEvidence",
-            "evidenceIds": [
-              "E03",
-              "E06"
-            ]
-          },
           "messages": [
             {
               "id": "MSG-CC1",
@@ -1202,7 +1194,7 @@
         {"id": "enter", "label": "进入"},
         {"id": "leave", "label": "离开"}
       ],
-      "notice": "仅显示林夏有权限查看的当晚进出记录。林夏使用管理员常开权限，因此她在一楼撤展期间没有产生 304 门锁记录。",
+      "notice": "你是 304 门锁的管理员，可查看当晚全部进出记录。你使用管理员常开权限，因此在一楼撤展期间没有产生 304 门锁记录。",
       "footerNote": "记录由双向门禁生成；管理员常开操作不计入个人进出记录。",
       "detailLabels": [
         "用户",
@@ -1349,6 +1341,7 @@
       "inspectTargets": [
         {
           "id": "LISTING-ITEM-MATCH",
+          "type": "itemMatch",
           "label": "对比商品照片与器材登记照",
           "requiresEvidenceIds": [
             "E01"
@@ -1360,7 +1353,10 @@
         },
         {
           "id": "LISTING-SELLER-MATCH",
+          "type": "sellerIdentityMatch",
           "label": "核对卖家联系尾号与通讯录",
+          "sellerSeenId": "MKT-SELLER-PHONE",
+          "contactSeenId": "CONTACTS-SELLER-MATCH",
           "requiresSeenIds": [
             "MKT-SELLER-PHONE",
             "CONTACTS-SELLER-MATCH"
@@ -1527,14 +1523,14 @@
     "id": "ENDING-01",
     "title": "相机已找回",
     "paragraphs": [
-      "保卫处老师根据商品链接联系二手平台，并要求方立到场说明情况。",
+      "你把二手平台的商品链接交给保卫处老师，方立被要求到场说明情况。",
       "方立承认自己一时冲动拿走相机，还没有完成交易。",
       "相机于当天中午被归还，储存卡和镜头均未损坏。",
       "摄影社撤销了商品链接，并重新制定了器材登记与上锁制度。"
     ],
     "finalMessage": {
-      "sender": "林夏",
-      "text": "相机找回来了。以后最后走的人，要和我一起拍照确认器材柜上锁。"
+      "sender": "保卫处老师",
+      "text": "方立已承认并归还相机。你手机里的那些记录，帮了大忙。"
     },
     "restartButtonLabel": "重新调查"
   },
@@ -1550,7 +1546,12 @@
       {
         "icon": "🔍",
         "title": "收集线索",
-        "text": "检查手机里各个软件的信息，关键内容会自动记录为线索。"
+        "text": "检查手机里各个软件的信息，关键内容会自动记录为线索；线索总数不会提前显示。"
+      },
+      {
+        "icon": "📱",
+        "title": "信息浏览",
+        "text": "手机中既有关键内容，也有与案件无关的日常信息。可在“浏览记录”查看已打开的信息范围；无需浏览全部信息，重点是找出关键事实。"
       },
       {
         "icon": "💡",
@@ -1560,12 +1561,12 @@
       {
         "icon": "✅",
         "title": "提交结论",
-        "text": "必须先收集全部 8 条线索，之后才能提交三道问题的答案并结案。"
+        "text": "必须找齐所有关键线索，之后才能提交三道问题的答案并结案。"
       },
       {
         "icon": "🏆",
         "title": "调查评级",
-        "text": "收集的线索越完整、提交次数越少，结案评级越高。"
+        "text": "全部线索收集后，完成越快、提交次数与提示使用越少，结案评级越高。"
       }
     ],
     "footer": "快开始你的探索之旅吧！",
@@ -1583,13 +1584,6 @@
     "miniprogramCollapse": "收起",
     "timelineTitle": "线索时间线",
     "timelineIntro": "查看手机中的可疑内容时，线索会自动按时间记录在这里。点击时间段查看线索，对照时间就能看出矛盾。",
-    "timelineProgressFormat": "已记录 {count} / {total} 条线索",
-    "timelineUnknownTime": "？:？？",
-    "timelineUnknownDesc": "还有线索没有发现，去手机里找找。",
-    "timelineHintLabel": "线索提示",
-    "timelineGroupCountFormat": "{count} / {total}",
-    "submitConclusionLabel": "✓ 提交结论",
-    "backToProgressLabel": "返回线索进度",
     "sellerPhoneFormat": "📱 联系电话 138 **** {suffix}",
     "sellerPhoneViewedLabel": "已标记为半条线索",
     "sellerPhoneCheckLabel": "查看联系尾号",
@@ -1597,15 +1591,14 @@
     "crossCheckHalfHint": "努力找找与其相互呼应的线索吧。",
     "crossCheckCompleteLabel": "已记录完整线索",
     "marketCompareBtn": "🔍 对比器材登记照",
-    "marketNeedE01Hint": "先查看图库中的器材登记照，确认失物的独有特征。",
+    "marketNeedPrerequisiteHint": "先查看图库中的器材登记照，确认失物的独有特征。",
     "marketCompareTitle": "特征对比",
     "marketCompareRegLabel": "器材登记照",
     "marketCompareMktLabel": "商品照片",
     "contactsSearchPlaceholder": "搜索姓名或尾号",
     "contactsNoResult": "没有找到匹配的联系人",
     "contactsPhoneFormat": "138 **** {suffix}",
-    "contactsRoleLabel": "备注",
-    "contactsGroupsTitle": "分组"
+    "contactsRoleLabel": "备注"
   },
   "initialState": {
     "points": 200,
@@ -1615,6 +1608,7 @@
     "hintedMaterialIds": [],
     "observedMaterialIds": [],
     "seenContentIds": [],
+    "readContentIds": [],
     "reportAnswers": {},
     "reportSubmitCount": 0,
     "endingUnlocked": false

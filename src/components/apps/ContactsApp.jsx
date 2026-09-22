@@ -8,16 +8,22 @@ function formatText(template, vars) {
 }
 
 // 通讯录应用：分组联系人列表 + 搜索（姓名/尾号）+ 联系人详情。
-// 查看与二手卖家尾号一致的联系人详情时，记为“尾号核对”条件之一（E08）。
+// 查看与二手卖家尾号一致的联系人详情时，记为卖家身份核对的一半条件。
 export default function ContactsApp() {
-  const { gameData, gameState, markSeen, viewMaterial } = useGame();
+  const { gameData, gameState, markSeen, viewMaterial, markRead } = useGame();
   const { uiText } = gameData;
   const contacts = gameData.content.contacts;
   // 二手平台卖家的联系尾号（用于跨应用核对）
   const sellerSuffix = gameData.content.marketplace?.listing?.seller?.phoneSuffix;
+  const sellerTarget = gameData.content.marketplace?.inspectTargets?.find(
+    (target) => target.type === 'sellerIdentityMatch'
+  );
+  const sellerEvidenceId = sellerTarget?.grantsEvidenceIds?.[0];
   const [keyword, setKeyword] = useState('');
   const [activeEntry, setActiveEntry] = useState(null); // { name, phone, role }
-  const e08Observed = gameState.observedMaterialIds.includes('E08');
+  const sellerMatchObserved = Boolean(
+    sellerEvidenceId && gameState.observedMaterialIds.includes(sellerEvidenceId)
+  );
 
   // 展开分组：personIds 引用 people，entries 为普通联系人
   const groups = contacts.groups.map((group) => {
@@ -70,10 +76,10 @@ export default function ContactsApp() {
             </div>
           )}
           {activeEntry.phoneSuffix === sellerSuffix && (
-            e08Observed ? (
+            sellerMatchObserved ? (
               <button
                 className="cross-check-status complete"
-                onClick={() => viewMaterial('E08')}
+                onClick={() => viewMaterial(sellerEvidenceId)}
               >
                 <b>{uiText.crossCheckCompleteLabel}</b>
                 <span>点击查看已形成的核对线索</span>
@@ -112,9 +118,14 @@ export default function ContactsApp() {
               key={it.id}
               onClick={() => {
                 setActiveEntry(it);
+                markRead(`contacts:${it.id}`);
                 // 打开与卖家尾号一致的联系人详情 → 满足核对条件的另一半
-                if (it.phoneSuffix && it.phoneSuffix === sellerSuffix) {
-                  markSeen('CONTACTS-SELLER-MATCH');
+                if (
+                  it.phoneSuffix &&
+                  it.phoneSuffix === sellerSuffix &&
+                  sellerTarget?.contactSeenId
+                ) {
+                  markSeen(sellerTarget.contactSeenId);
                 }
               }}
             >

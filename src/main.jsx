@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom/client';
 import App from './App.jsx';
 import AppErrorBoundary from './components/AppErrorBoundary.jsx';
 import { GameProvider } from './game/GameContext.jsx';
-import gameData from '../gameData.json';
+import gameData from './game/runtimeData.js';
 import './styles.css';
 
 ReactDOM.createRoot(document.getElementById('root')).render(

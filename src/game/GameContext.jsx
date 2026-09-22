@@ -1,8 +1,9 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
-import gameData from '../../gameData.json';
+import gameData from './runtimeData.js';
 import {
   calculateCompletionReward,
   canSubmitReport,
+  getEvidenceProgress,
   gradeReport,
   redeemClueHint,
 } from './engine.js';
@@ -10,7 +11,7 @@ import { loadSavedSession } from './saveState.js';
 
 const GameContext = createContext(null);
 const STORAGE_KEY = gameData.game.saveKey;
-const SAVE_VERSION = 11;
+const SAVE_VERSION = 12;
 
 const SAVED_SESSION = loadSavedSession(
   typeof localStorage === 'undefined' ? null : localStorage,
@@ -111,6 +112,15 @@ export function GameProvider({ children }) {
     [applyState]
   );
 
+  // 浏览记录只服务于“我还看过哪些信息”，不会产生线索或改变结案条件。
+  const markRead = useCallback(
+    (contentId) => {
+      if (stateRef.current.readContentIds.includes(contentId)) return;
+      applyState((prev) => ({ ...prev, readContentIds: [...prev.readContentIds, contentId] }));
+    },
+    [applyState]
+  );
+
   const purchaseHint = useCallback(() => {
     const result = redeemClueHint(stateRef.current, gameData, 100);
     if (!result.ok) {
@@ -123,28 +133,28 @@ export function GameProvider({ children }) {
   }, [applyState, showToast]);
 
   // 跨应用核对：二手卖家联系尾号（商品页点击）与通讯录同尾号联系人详情
-  // 两侧都查看后，自动记录为线索（E08）。
+  // 两侧都查看后，自动记录目标配置所指向的线索。
   useEffect(() => {
     const target = gameData.content.marketplace.inspectTargets.find(
-      (t) => Array.isArray(t.requiresSeenIds) && t.requiresSeenIds.length > 0
+      (item) => item.type === 'sellerIdentityMatch'
     );
     if (!target) return;
     const seen = new Set(gameState.seenContentIds);
     if (target.requiresSeenIds.every((id) => seen.has(id))) {
       target.grantsEvidenceIds.forEach((id) => recordObservation(id));
     }
-  }, [gameState.seenContentIds, recordObservation, gameData]);
+  }, [gameState.seenContentIds, recordObservation]);
 
   const submitReport = useCallback(
     (answers) => {
       if (!canSubmitReport(stateRef.current, gameData)) {
-        const missingClueCount = gameData.evidence.length - stateRef.current.observedMaterialIds.length;
+        const { missing: missingClueCount } = getEvidenceProgress(stateRef.current, gameData);
         const result = {
           allCorrect: false,
           incomplete: true,
           missingClueCount,
           wrongQuestionIds: [],
-          hints: [`还需找到 ${missingClueCount} 条线索，收集完整后才能提交结论。`],
+          hints: ['关键线索尚未齐全，找齐后才能提交结论。'],
         };
         showToast(result.hints[0]);
         return result;
@@ -158,11 +168,12 @@ export function GameProvider({ children }) {
         if (firstCompletion) {
           const startedAt = prev.investigationStartedAt || completedAt;
           elapsedSeconds = Math.max(0, Math.round((completedAt - startedAt) / 1000));
+          const evidenceProgress = getEvidenceProgress(prev, gameData);
           reward = calculateCompletionReward(
             elapsedSeconds,
             gameData.settlement.rewardConfig,
-            prev.observedMaterialIds.length,
-            gameData.evidence.length
+            evidenceProgress.found,
+            evidenceProgress.total
           );
         }
         return {
@@ -184,8 +195,8 @@ export function GameProvider({ children }) {
     [applyState, showToast]
   );
 
-  // 结束本次值班：清空进度，回到登录页，可重新登录重玩
-  const endGame = useCallback(() => {
+  // 清空进度并回到手机解锁；结算页“结束调查”和顶部重新开始共用同一安全入口。
+  const resetToLogin = useCallback(() => {
     try {
       localStorage.removeItem(STORAGE_KEY);
     } catch {
@@ -196,6 +207,9 @@ export function GameProvider({ children }) {
     setOpenAppId(null);
     setMaterialDetailId(null);
   }, [applyState]);
+
+  const endGame = resetToLogin;
+  const restartInvestigation = resetToLogin;
 
   const openApp = useCallback(
     (appId) => {
@@ -226,20 +240,22 @@ export function GameProvider({ children }) {
       backToCase,
       viewSettlement,
       endGame,
+      restartInvestigation,
       openApp,
       closeApp,
       recordObservation,
       viewMaterial,
       dismissMaterialDetail,
       markSeen,
+      markRead,
       purchaseHint,
       submitReport,
     }),
     [
       gameState, screen, openAppId, toast, materialDetailId, showToast,
-      startInvestigation, loginToSystem, backToCase, viewSettlement, endGame,
+      startInvestigation, loginToSystem, backToCase, viewSettlement, endGame, restartInvestigation,
       openApp, closeApp, recordObservation,
-      viewMaterial, dismissMaterialDetail, markSeen, submitReport,
+      viewMaterial, dismissMaterialDetail, markSeen, markRead, submitReport,
       purchaseHint,
     ]
   );

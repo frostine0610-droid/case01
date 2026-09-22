@@ -18,9 +18,122 @@ export function gradeReport(answers, gameData) {
   return { allCorrect: wrongIds.length === 0, wrongQuestionIds: wrongIds, hints };
 }
 
+// 统一的线索进度口径：仅统计案件数据中存在的证据 ID，并自动去重。
+export function getEvidenceProgress(state, gameData) {
+  const evidence = Array.isArray(gameData?.evidence) ? gameData.evidence : [];
+  const observedIds = Array.isArray(state?.observedMaterialIds)
+    ? state.observedMaterialIds
+    : [];
+  const observed = new Set(observedIds);
+  const found = evidence.reduce(
+    (count, item) => count + (observed.has(item.id) ? 1 : 0),
+    0
+  );
+  const total = evidence.length;
+  const missing = Math.max(0, total - found);
+
+  return {
+    found,
+    total,
+    missing,
+    complete: missing === 0,
+    percent: total === 0 ? 0 : Math.min(100, Math.max(0, (found / total) * 100)),
+  };
+}
+
 export function canSubmitReport(state, gameData) {
-  const observed = new Set(state.observedMaterialIds || []);
-  return gameData.evidence.every((item) => observed.has(item.id));
+  return getEvidenceProgress(state, gameData).complete;
+}
+
+// 浏览记录与案件线索完全分离：它只统计玩家主动打开过的信息项，包含干扰信息。
+function getBrowseGroups(gameData) {
+  const content = gameData?.content || {};
+  const contacts = (content.contacts?.groups || []).flatMap((group) => [
+    ...(group.personIds || []),
+    ...(group.entries || []).map((entry) => entry.id),
+  ]);
+  const distractors = content.distractors || {};
+
+  return [
+    { id: 'gallery', label: '图库', itemIds: (content.gallery?.photos || []).map((item) => `gallery:${item.id}`) },
+    { id: 'wechat', label: '微信会话', itemIds: (content.wechat?.chats || []).map((item) => `chat:${item.id}`) },
+    { id: 'doorlock', label: '门锁记录', itemIds: (content.doorLock?.events || []).map((item) => `doorlock:${item.id}`) },
+    { id: 'contacts', label: '联系人', itemIds: contacts.map((id) => `contacts:${id}`) },
+    {
+      id: 'market',
+      label: '二手交易',
+      itemIds: [
+        ...(content.marketplace?.listing ? ['market:listing'] : []),
+        ...(content.marketplace?.listing?.images || []).map((item) => `market:${item.id}`),
+      ],
+    },
+    {
+      id: 'daily',
+      label: '日常应用',
+      itemIds: [
+        ...(distractors.calendar ? ['distractor:calendar'] : []),
+        ...(distractors.clock ? ['distractor:clock'] : []),
+        ...(distractors.notes?.notes || []).map((item) => `distractor:notes:${item.id}`),
+        ...(distractors.express?.packages || []).map((item) => `distractor:express:${item.id}`),
+      ],
+    },
+  ];
+}
+
+export function getBrowseItemIds(gameData) {
+  return new Set(getBrowseGroups(gameData).flatMap((group) => group.itemIds));
+}
+
+export function getBrowseProgress(state, gameData) {
+  const read = new Set(Array.isArray(state?.readContentIds) ? state.readContentIds : []);
+  const groups = getBrowseGroups(gameData).map((group) => {
+    const readCount = group.itemIds.filter((id) => read.has(id)).length;
+    const total = group.itemIds.length;
+    return {
+      ...group,
+      readCount,
+      total,
+      complete: readCount === total,
+      percent: total === 0 ? 0 : Math.round((readCount / total) * 100),
+    };
+  });
+  const total = groups.reduce((sum, group) => sum + group.total, 0);
+  const readCount = groups.reduce((sum, group) => sum + group.readCount, 0);
+  return {
+    groups,
+    readCount,
+    total,
+    complete: total > 0 && readCount === total,
+    percent: total === 0 ? 0 : Math.round((readCount / total) * 100),
+  };
+}
+
+// 调查评级：S 同时要求速度、一次提交和零提示；A 放宽提交与提示次数；其余为 B。
+export function calculateInvestigationRating(
+  { submitCount = 0, hintCount = 0, elapsedSeconds = null },
+  ratingConfig
+) {
+  const submits = Math.max(0, Number(submitCount) || 0);
+  const hints = Math.max(0, Number(hintCount) || 0);
+  const elapsed = elapsedSeconds == null ? null : Math.max(0, Number(elapsedSeconds) || 0);
+  const s = ratingConfig?.S || {};
+  const a = ratingConfig?.A || {};
+
+  if (
+    elapsed != null &&
+    submits <= (s.maxSubmitCount ?? 1) &&
+    hints <= (s.maxHintCount ?? 0) &&
+    elapsed <= (s.maxSeconds ?? 300)
+  ) {
+    return 'S';
+  }
+  if (
+    submits <= (a.maxSubmitCount ?? 3) &&
+    hints <= (a.maxHintCount ?? 1)
+  ) {
+    return 'A';
+  }
+  return 'B';
 }
 
 export function calculateCompletionReward(

@@ -1,13 +1,6 @@
 import { useMemo, useState } from 'react';
 import { useGame } from '../../game/GameContext.jsx';
 
-// 文案模板替换："{count} / {total}" → "3 / 8"
-function formatText(template, vars) {
-  return String(template).replace(/\{(\w+)\}/g, (_, key) =>
-    key in vars ? vars[key] : `{${key}}`
-  );
-}
-
 // 时间线单条已记录线索
 function TimelineItem({ item, onOpen }) {
   return (
@@ -26,18 +19,18 @@ function TimelineItem({ item, onOpen }) {
   );
 }
 
-// 时间线单条占位：未收集的线索只给出位置提示，不剧透内容。
-function TimelineHint({ clue, revealed }) {
+// 未确认内容只显示概括提示；兑换过位置提示时才显示相应位置。
+function TimelineHint({ clue = null }) {
   return (
     <li className="timeline-item blank">
       <span className="timeline-node" aria-hidden="true" />
       <div className="timeline-card">
         <div className="timeline-card-head">
-          <span className="timeline-time">{clue.timelineTime}</span>
+          <span className="timeline-time">待核对</span>
         </div>
         <div className="timeline-main">
-          <p className="timeline-desc">该时段还有线索尚未确认</p>
-          {revealed ? (
+          <p className="timeline-desc">该时段仍有关键事实尚未确认</p>
+          {clue ? (
             <p className="timeline-hint">
               <span className="timeline-hint-label">💡 已兑换的位置提示</span>
               {clue.hint}
@@ -82,7 +75,6 @@ export default function InvestigationApp() {
     return firstIncomplete?.id || groups[0]?.id || null;
   });
 
-  const foundCount = allClues.filter((c) => foundIds.has(c.id)).length;
   const hintedIds = new Set(gameState.hintedMaterialIds || []);
 
   return (
@@ -94,26 +86,14 @@ export default function InvestigationApp() {
             <p>{uiText.timelineIntro}</p>
           </div>
         </div>
-        <div className="timeline-progress">
-          <span className="timeline-progress-text">
-            {formatText(uiText.timelineProgressFormat, {
-              count: foundCount,
-              total: allClues.length,
-            })}
-          </span>
-          <div className="timeline-progress-bar">
-            <i
-              style={{
-                width: `${allClues.length ? (foundCount / allClues.length) * 100 : 0}%`,
-              }}
-            />
-          </div>
-        </div>
       </div>
 
       <div className="inv-groups">
         {groups.map((group) => {
-          const found = group.clues.filter((c) => foundIds.has(c.id)).length;
+          const foundClues = group.clues.filter((clue) => foundIds.has(clue.id));
+          const missingClues = group.clues.filter((clue) => !foundIds.has(clue.id));
+          const hintedClues = missingClues.filter((clue) => hintedIds.has(clue.id));
+          const hasUnhintedClues = missingClues.some((clue) => !hintedIds.has(clue.id));
           const open = openGroupId === group.id;
           return (
             <div className={`inv-group ${open ? 'open' : ''}`} key={group.id}>
@@ -125,38 +105,22 @@ export default function InvestigationApp() {
                 <span className="inv-group-label">{group.label}</span>
                 <span
                   className={`inv-group-count ${
-                    found === group.clues.length && group.clues.length > 0 ? 'done' : ''
+                    missingClues.length === 0 && group.clues.length > 0 ? 'done' : ''
                   }`}
                 >
-                  {formatText(uiText.timelineGroupCountFormat, {
-                    count: found,
-                    total: group.clues.length,
-                  })}
+                  {missingClues.length === 0 ? '关键事实已确认' : '仍有待核对信息'}
                 </span>
                 <span className="inv-group-arrow" aria-hidden="true">
                   {open ? '⌃' : '⌄'}
                 </span>
               </button>
-              <div className="inv-group-bar" aria-hidden="true">
-                <i
-                  style={{
-                    width: `${group.clues.length ? (found / group.clues.length) * 100 : 0}%`,
-                  }}
-                />
-              </div>
               {open && (
                 <ul className="timeline-list">
-                  {group.clues.map((clue) =>
-                    foundIds.has(clue.id) ? (
-                      <TimelineItem key={clue.id} item={clue} onOpen={viewMaterial} />
-                    ) : (
-                      <TimelineHint
-                        key={clue.id}
-                        clue={clue}
-                        revealed={hintedIds.has(clue.id)}
-                      />
-                    )
-                  )}
+                  {foundClues.map((clue) => (
+                    <TimelineItem key={clue.id} item={clue} onOpen={viewMaterial} />
+                  ))}
+                  {hintedClues.map((clue) => <TimelineHint key={clue.id} clue={clue} />)}
+                  {hasUnhintedClues && <TimelineHint />}
                 </ul>
               )}
             </div>

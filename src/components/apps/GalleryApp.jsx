@@ -11,7 +11,7 @@ function photoTimestamp(value) {
 
 // 图库应用：全部照片按时间倒序排列 → 照片详情（左右翻页 + 缩放 + “i”信息页 + 检查目标）
 export default function GalleryApp() {
-  const { gameData, gameState, recordObservation, viewMaterial } = useGame();
+  const { gameData, gameState, recordObservation, viewMaterial, markRead } = useGame();
   const gallery = gameData.content.gallery;
   const appName =
     gameData.phone.apps.find((a) => a.id === 'gallery')?.name || gameData.uiText.back;
@@ -29,13 +29,18 @@ export default function GalleryApp() {
   const activeIndex = active ? sortedPhotos.findIndex((p) => p.id === active.id) : -1;
   const evidenceIdOf = (photo) => photo.inspectTargets?.[0]?.grantsEvidenceIds?.[0];
 
+  const openPhoto = (photoId) => {
+    setActiveId(photoId);
+    setInfoOpen(false);
+    setZoom(1);
+    markRead(`gallery:${photoId}`);
+  };
+
   // 左右翻页：切换照片时重置缩放与信息页
   const goToPhoto = (index) => {
     const next = sortedPhotos[index];
     if (!next) return;
-    setActiveId(next.id);
-    setInfoOpen(false);
-    setZoom(1);
+    openPhoto(next.id);
   };
 
   // 详情页滑动手势：左右滑动切换上一张 / 下一张
@@ -207,10 +212,7 @@ export default function GalleryApp() {
             <button
               className="gallery-thumb"
               key={photo.id}
-              onClick={() => {
-                setActiveId(photo.id);
-                setZoom(1);
-              }}
+              onClick={() => openPhoto(photo.id)}
               title={`${photo.capturedAt} · ${photo.title}`}
             >
               <img

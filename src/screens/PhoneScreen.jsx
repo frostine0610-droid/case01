@@ -4,6 +4,8 @@ import AppView from '../components/AppView.jsx';
 import CaseDetailModal from '../components/CaseDetailModal.jsx';
 import ConclusionModal from '../components/ConclusionModal.jsx';
 import EvidencePopups from '../components/EvidencePopups.jsx';
+import BrowseProgressModal from '../components/BrowseProgressModal.jsx';
+import { getBrowseProgress, getEvidenceProgress } from '../game/engine.js';
 
 // 手机桌面：亮色壁纸 + 华为经典风（时钟卡片 + 4 列图标网格）
 // 翻页：底部三键导航 ◀ ● ▶ 或左右滑动或页面指示点
@@ -127,7 +129,9 @@ function NavKeys({ onBack, onHome, onForward, forwardDisabled, inApp }) {
 }
 
 export default function PhoneScreen() {
-  const { gameData, gameState, openAppId, closeApp, toast, purchaseHint } = useGame();
+  const {
+    gameData, gameState, openAppId, closeApp, toast, purchaseHint, restartInvestigation,
+  } = useGame();
   const { phone } = gameData;
   const { statusBar } = phone;
   const openAppData = phone.apps.find((app) => app.id === openAppId);
@@ -144,27 +148,42 @@ export default function PhoneScreen() {
   const [hintResult, setHintResult] = useState(null);
   // 调查说明书（通关条件说明）弹层
   const [guideOpen, setGuideOpen] = useState(false);
+  const [browseOpen, setBrowseOpen] = useState(false);
+  const [restartConfirmOpen, setRestartConfirmOpen] = useState(false);
+  const [completionNoticeOpen, setCompletionNoticeOpen] = useState(false);
   const guide = gameData.guide;
 
   // Esc 关闭案件档案 / 说明书弹层
   useEffect(() => {
-    if (!caseDetailOpen && !conclusionOpen && !guideOpen && !hintResult) return;
+    if (!caseDetailOpen && !conclusionOpen && !guideOpen && !hintResult && !browseOpen && !restartConfirmOpen) return;
     const onKey = (e) => {
       if (e.key !== 'Escape') return;
       setCaseDetailOpen(false);
       setConclusionOpen(false);
       setGuideOpen(false);
       setHintResult(null);
+      setBrowseOpen(false);
+      setRestartConfirmOpen(false);
     };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
-  }, [caseDetailOpen, conclusionOpen, guideOpen, hintResult]);
+  }, [caseDetailOpen, conclusionOpen, guideOpen, hintResult, browseOpen, restartConfirmOpen]);
 
-  const totalClues = gameData.evidence.length;
-  const foundClues = gameState.observedMaterialIds.length;
-  const missingClues = totalClues - foundClues;
-  const cluesComplete = missingClues === 0;
-  const progressPercent = totalClues ? (foundClues / totalClues) * 100 : 0;
+  const {
+    complete: cluesComplete,
+  } = getEvidenceProgress(gameState, gameData);
+  const browseProgress = getBrowseProgress(gameState, gameData);
+  const previousCluesComplete = useRef(cluesComplete);
+
+  // 收集最后一条关键线索时给予一次明确但不阻塞操作的完成反馈。
+  useEffect(() => {
+    const justCompleted = !previousCluesComplete.current && cluesComplete;
+    previousCluesComplete.current = cluesComplete;
+    if (!justCompleted) return undefined;
+    setCompletionNoticeOpen(true);
+    const timer = window.setTimeout(() => setCompletionNoticeOpen(false), 4200);
+    return () => window.clearTimeout(timer);
+  }, [cluesComplete]);
 
   const handlePurchaseHint = () => {
     const result = purchaseHint();
@@ -196,24 +215,33 @@ export default function PhoneScreen() {
             📖
           </button>
         </div>
-        <button className="hint-trigger" onClick={handlePurchaseHint}>
-          <span>线索提示</span>
-          <b>兑换 -100 积分</b>
-        </button>
         <div className="desk-control-row">
-          <button className="case-detail-trigger" onClick={() => setCaseDetailOpen(true)}>
-            <span>线索进度</span>
-            <b>{foundClues} / {totalClues}</b>
-            <i><em style={{ width: `${progressPercent}%` }} /></i>
+          <button className="browse-trigger" onClick={() => setBrowseOpen(true)}>
+            <span>浏览记录</span>
+            <b>已浏览 {browseProgress.percent}% 的信息</b>
+            <i><em style={{ width: `${browseProgress.percent}%` }} /></i>
           </button>
           <button
-            className="conclusion-trigger"
+            className={`case-detail-trigger ${cluesComplete ? 'is-complete' : ''}`}
+            onClick={() => setCaseDetailOpen(true)}
+          >
+            <span>线索进度</span>
+            <b>{cluesComplete ? '✓ 关键证据链已完整' : '继续核对关键事实'}</b>
+          </button>
+        </div>
+        <button className="hint-trigger" onClick={handlePurchaseHint}>
+          <span>💡 获取线索提示</span>
+          <b>消耗 100 调查积分</b>
+        </button>
+        <div className="desk-primary-action">
+          <button
+            className={`conclusion-trigger ${cluesComplete ? 'is-ready' : ''}`}
             onClick={() => setConclusionOpen(true)}
             disabled={!cluesComplete}
-            title={cluesComplete ? '提交调查结论' : `还需找到 ${missingClues} 条线索`}
+            title={cluesComplete ? '提交调查结论' : '关键线索尚未齐全'}
           >
-            <span>提交结论</span>
-            <b>{cluesComplete ? '整理案情并结案' : `收集全部线索后解锁 · 还差 ${missingClues} 条`}</b>
+            <span>{cluesComplete ? '✓ 提交调查结论' : '提交结论'}</span>
+            <b>{cluesComplete ? '关键线索已齐全，可以结案' : '找齐关键线索后解锁'}</b>
           </button>
         </div>
       </div>
@@ -251,6 +279,41 @@ export default function PhoneScreen() {
       </div>
       {caseDetailOpen && <CaseDetailModal onClose={() => setCaseDetailOpen(false)} />}
       {conclusionOpen && <ConclusionModal onClose={() => setConclusionOpen(false)} />}
+      {browseOpen && <BrowseProgressModal onClose={() => setBrowseOpen(false)} />}
+
+      <button
+        className="restart-trigger"
+        onClick={() => setRestartConfirmOpen(true)}
+        aria-label="重新开始调查"
+        title="重新开始调查"
+      >
+        ↻
+      </button>
+
+      {completionNoticeOpen && (
+        <div className="completion-notice" role="status">
+          <span>✓</span>
+          <div>
+            <b>关键证据链已完整</b>
+            <small>现在可以提交调查结论了</small>
+          </div>
+          <button onClick={() => setCompletionNoticeOpen(false)} aria-label="关闭完成提示">✕</button>
+        </div>
+      )}
+
+      {restartConfirmOpen && (
+        <div className="guide-overlay restart-overlay" role="dialog" aria-modal="true" aria-label="确认重新开始">
+          <div className="restart-confirm-card">
+            <span className="restart-confirm-icon">↻</span>
+            <h2>重新开始调查？</h2>
+            <p>这会清除当前的线索、积分、浏览记录和结案进度，并回到身份登录页面。</p>
+            <div className="restart-confirm-actions">
+              <button onClick={() => setRestartConfirmOpen(false)}>取消</button>
+              <button className="restart-confirm-accept" onClick={restartInvestigation}>清除进度并重新开始</button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {hintResult && (
         <div className="hint-result" role="status">

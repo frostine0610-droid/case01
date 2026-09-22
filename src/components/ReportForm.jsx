@@ -73,7 +73,7 @@ export default function ReportForm({ onSubmit, embedded = false }) {
 
       {!cluesComplete && (
         <div className="report-locked-note">
-          尚未收集全部线索，暂时不能提交调查结论。
+          关键线索尚未齐全，暂时不能提交调查结论。
         </div>
       )}
 

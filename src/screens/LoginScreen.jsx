@@ -1,8 +1,8 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useGame } from '../game/GameContext.jsx';
 
-// 登录页：保卫处办公系统风格
-// 动画流程：系统启动日志逐行出现 → 登录卡滑入 → 点击登录 → 核验动画 → 进入案件简报
+// 登录页：机主（林夏）解锁自己的手机
+// 动画流程：开机日志逐行出现 → 解锁卡滑入 → 点击解锁 → 核验动画 → 进入案件简报
 export default function LoginScreen() {
   const { gameData, loginToSystem } = useGame();
   const login = gameData.login;
@@ -11,6 +11,12 @@ export default function LoginScreen() {
   const [bootStep, setBootStep] = useState(0);
   // booting = 启动日志阶段；ready = 登录卡；verifying = 核验中；success = 通过
   const [phase, setPhase] = useState('booting');
+  const loginTimers = useRef([]);
+
+  useEffect(() => () => {
+    loginTimers.current.forEach((timer) => clearTimeout(timer));
+    loginTimers.current = [];
+  }, []);
 
   useEffect(() => {
     if (bootStep >= login.bootLines.length) {
@@ -24,8 +30,10 @@ export default function LoginScreen() {
   const handleLogin = () => {
     if (phase !== 'ready') return;
     setPhase('verifying');
-    setTimeout(() => setPhase('success'), 1100);
-    setTimeout(() => loginToSystem(), 1750);
+    loginTimers.current.push(
+      setTimeout(() => setPhase('success'), 1100),
+      setTimeout(() => loginToSystem(), 1750)
+    );
   };
 
   // 点击任意处可跳过启动日志
@@ -41,97 +49,105 @@ export default function LoginScreen() {
       <div className="login-bg-scan" aria-hidden="true" />
 
       {/* 启动日志 */}
-      <div className="login-boot" aria-hidden={phase !== 'booting'}>
-        <div className="login-boot-head">
-          <span className="login-boot-logo">🛡</span>
-          <span className="login-boot-name">{login.systemName}</span>
-          <span className="login-boot-ver">{login.systemVersion}</span>
-        </div>
-        {login.bootLines.slice(0, bootStep).map((line) => (
-          <p className="login-boot-line" key={line}>
-            <span className="login-boot-tick">✓</span>
-            {line}
-          </p>
-        ))}
-        {phase === 'booting' && (
+      {phase === 'booting' && (
+        <div className="login-boot">
+          <div className="login-boot-head">
+            <span className="login-boot-logo">{login.logoIcon}</span>
+            <span className="login-boot-name">{login.systemName}</span>
+            <span className="login-boot-ver">{login.systemVersion}</span>
+          </div>
+          {login.bootLines.slice(0, bootStep).map((line) => (
+            <p className="login-boot-line" key={line}>
+              <span className="login-boot-tick">✓</span>
+              {line}
+            </p>
+          ))}
           <span className="login-boot-cursor" aria-hidden="true" />
-        )}
-      </div>
+        </div>
+      )}
 
       {/* 登录卡 */}
       {phase !== 'booting' && (
-        <div className={`login-card ${phase === 'success' ? 'is-success' : ''}`}>
-          <div className="login-card-head">
-            <span className="login-card-logo">🛡</span>
-            <div>
-              <div className="login-card-sys">{login.systemName}</div>
-              <div className="login-card-date">{login.dateLabel}</div>
-            </div>
-          </div>
-
-          {/* 工牌 */}
-          <div className="login-badge-card">
-            <span className="login-badge-avatar">{login.operatorName.slice(0, 1)}</span>
-            <div className="login-badge-info">
-              <div className="login-badge-role">
-                <small>{login.roleLabel}</small>
-                <b>{login.roleName}</b>
-              </div>
-              <div className="login-badge-rows">
-                <span>
-                  <small>{login.operatorLabel}</small>
-                  <b>{login.operatorName}</b>
-                </span>
-                <span>
-                  <small>{login.badgeLabel}</small>
-                  <b>{login.badgeNo}</b>
-                </span>
+        <div className={`login-scene ${phase === 'success' ? 'is-success' : ''}`}>
+          <section className="login-story-panel">
+            <span className="login-story-kicker">CAMERA RECOVERY · 01</span>
+            <h1>回到昨夜，<br />找回消失的相机</h1>
+            <p>{login.dutyHint}</p>
+            <div className="login-story-notice">
+              <span className="login-notice-dot" aria-hidden="true" />
+              <div>
+                <small>{login.noticeLabel}</small>
+                <b>{login.noticeText}</b>
               </div>
             </div>
-          </div>
+            <span className="login-story-foot">所有调查从这部手机中的真实记录开始</span>
+          </section>
 
-          {/* 口令（已自动填充，仅演示） */}
-          <div className="login-field">
-            <label>{login.passwordLabel}</label>
-            <div className="login-password">
-              <span>•</span><span>•</span><span>•</span><span>•</span>
-              <span>•</span><span>•</span>
+          <section className="login-card">
+            <div className="login-card-head">
+              <span className="login-card-logo">{login.logoIcon}</span>
+              <div>
+                <div className="login-card-sys">{login.systemName}</div>
+                <div className="login-card-date">{login.dateLabel}</div>
+              </div>
+              <span className="login-device-status">82%</span>
             </div>
-          </div>
 
-          {/* 待办提醒 */}
-          <div className="login-notice">
-            <span className="login-notice-dot" aria-hidden="true" />
-            <div>
-              <small>{login.noticeLabel}</small>
-              <b>{login.noticeText}</b>
+            {/* 机主身份 */}
+            <div className="login-owner-card">
+              <span className="login-badge-avatar">{login.operatorName.slice(0, 1)}</span>
+              <div className="login-badge-info">
+                <div className="login-badge-role">
+                  <small>{login.roleLabel}</small>
+                  <b>{login.roleName}</b>
+                </div>
+                <div className="login-badge-rows">
+                  <span>
+                    <small>{login.operatorLabel}</small>
+                    <b>{login.operatorName}</b>
+                  </span>
+                  <span>
+                    <small>{login.badgeLabel}</small>
+                    <b>{login.badgeNo}</b>
+                  </span>
+                </div>
+              </div>
             </div>
-          </div>
 
-          {/* 登录按钮：三态（登录 → 核验中 → 通过） */}
-          <button
-            className={`login-submit ${phase === 'verifying' ? 'verifying' : ''} ${
-              phase === 'success' ? 'success' : ''
-            }`}
-            onClick={handleLogin}
-            disabled={phase !== 'ready'}
-          >
-            {phase === 'ready' && (
-              <>
-                {login.loginButtonLabel}
-                <i className="login-btn-arrow" aria-hidden="true">→</i>
-              </>
-            )}
-            {phase === 'verifying' && (
-              <>
-                <i className="login-spinner" aria-hidden="true" />
-                {login.loggingInLabel}
-              </>
-            )}
-            {phase === 'success' && <>✓ {login.successLabel}</>}
-          </button>
+            {/* 密码（已自动填充，仅演示） */}
+            <div className="login-field">
+              <label>{login.passwordLabel}</label>
+              <div className="login-password" aria-label="锁屏密码已填充">
+                <span>•</span><span>•</span><span>•</span><span>•</span>
+                <span>•</span><span>•</span>
+              </div>
+            </div>
 
-          <p className="login-duty-hint">{login.dutyHint}</p>
+            {/* 解锁按钮：三态（解锁 → 核验中 → 通过） */}
+            <button
+              className={`login-submit ${phase === 'verifying' ? 'verifying' : ''} ${
+                phase === 'success' ? 'success' : ''
+              }`}
+              onClick={handleLogin}
+              disabled={phase !== 'ready'}
+            >
+              {phase === 'ready' && (
+                <>
+                  {login.loginButtonLabel}
+                  <i className="login-btn-arrow" aria-hidden="true">→</i>
+                </>
+              )}
+              {phase === 'verifying' && (
+                <>
+                  <i className="login-spinner" aria-hidden="true" />
+                  {login.loggingInLabel}
+                </>
+              )}
+              {phase === 'success' && <>✓ {login.successLabel}</>}
+            </button>
+
+            <p className="login-security-hint">🔒 本地剧情体验 · 不会上传个人信息</p>
+          </section>
         </div>
       )}
     </div>

@@ -1,8 +1,9 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useGame } from '../game/GameContext.jsx';
 
 // 日历：月视图 + 近期日程（今日描边、事发日高亮）
-function CalendarView({ data }) {
+function CalendarView({ data, onRead }) {
+  useEffect(() => onRead('distractor:calendar'), [onRead]);
   const cells = [
     ...Array.from({ length: data.leadBlanks }, () => null),
     ...Array.from({ length: data.daysInMonth }, (_, i) => i + 1),
@@ -52,7 +53,8 @@ function CalendarView({ data }) {
 }
 
 // 时钟：当前时间 + 闹钟列表（开关可点击）
-function ClockView({ data }) {
+function ClockView({ data, onRead }) {
+  useEffect(() => onRead('distractor:clock'), [onRead]);
   const [alarms, setAlarms] = useState(data.alarms);
   const toggle = (i) =>
     setAlarms((list) => list.map((a, j) => (j === i ? { ...a, enabled: !a.enabled } : a)));
@@ -82,7 +84,7 @@ function ClockView({ data }) {
 }
 
 // 备忘录：笔记列表 → 笔记详情
-function NotesView({ data }) {
+function NotesView({ data, onRead }) {
   const [openId, setOpenId] = useState(null);
   const note = data.notes.find((n) => n.id === openId);
 
@@ -107,7 +109,10 @@ function NotesView({ data }) {
       <ul className="note-list">
         {data.notes.map((n) => (
           <li key={n.id}>
-            <button className="note-item" onClick={() => setOpenId(n.id)}>
+            <button className="note-item" onClick={() => {
+              onRead(`distractor:notes:${n.id}`);
+              setOpenId(n.id);
+            }}>
               <b>{n.title}</b>
               <span>{n.preview}</span>
             </button>
@@ -119,7 +124,7 @@ function NotesView({ data }) {
 }
 
 // 快递：包裹列表 → 物流时间线
-function ExpressView({ data }) {
+function ExpressView({ data, onRead }) {
   const [openId, setOpenId] = useState(null);
   const pkg = data.packages.find((p) => p.id === openId);
 
@@ -151,7 +156,10 @@ function ExpressView({ data }) {
       <ul className="pkg-list">
         {data.packages.map((p) => (
           <li key={p.id}>
-            <button className="pkg-item" onClick={() => setOpenId(p.id)}>
+            <button className="pkg-item" onClick={() => {
+              onRead(`distractor:express:${p.id}`);
+              setOpenId(p.id);
+            }}>
               <span className="pkg-item-icon">📦</span>
               <span className="pkg-item-info">
                 <b>{p.name}</b>
@@ -175,7 +183,7 @@ const DIST_VIEWS = {
 
 // 干扰应用：与案情无关的日常应用，内容全部由 content.distractors 数据驱动
 export default function DistractorApp({ app }) {
-  const { gameData } = useGame();
+  const { gameData, markRead } = useGame();
   const data = gameData.content.distractors?.[app.id];
   const View = DIST_VIEWS[app.id];
 
@@ -188,5 +196,5 @@ export default function DistractorApp({ app }) {
     );
   }
 
-  return <View data={data} />;
+  return <View data={data} onRead={markRead} />;
 }
